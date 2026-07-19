@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -32,6 +33,19 @@ from ai_cos.views import CosmicView, OperationsView
 DATA_DIR = Path(".ai_cos")
 STATE_FILE = DATA_DIR / "state.json"
 MEMORY_FILE = DATA_DIR / "memory.json"
+
+
+def configure_paths(data_dir: str | Path) -> None:
+    """Choisit où vivent état et mémoire.
+
+    Par défaut `.ai_cos/` (local, ignoré par git). Pour une campagne terrain
+    dont l'état doit survivre aux environnements éphémères, utiliser un
+    répertoire suivi par git (ex. `terrain/`) et committer chaque jour.
+    """
+    global DATA_DIR, STATE_FILE, MEMORY_FILE
+    DATA_DIR = Path(data_dir)
+    STATE_FILE = DATA_DIR / "state.json"
+    MEMORY_FILE = DATA_DIR / "memory.json"
 
 
 def make_source(spec: str | None) -> DataSource | None:
@@ -84,7 +98,13 @@ def main(argv: list[str] | None = None) -> None:
         default=None,
         help="Source réelle : chemin d'un journal JSON, ou « stripe » (STRIPE_API_KEY requis)",
     )
+    parser.add_argument(
+        "--data-dir",
+        default=os.environ.get("AI_COS_DATA_DIR", ".ai_cos"),
+        help="Répertoire d'état et de mémoire (défaut : .ai_cos, ou AI_COS_DATA_DIR)",
+    )
     args = parser.parse_args(argv)
+    configure_paths(args.data_dir)
 
     engine, state, actions, automation = build_scenario()
     actions_by_name = {a.name: a for a in actions}
