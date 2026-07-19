@@ -29,6 +29,12 @@ def main() -> None:
     if STATE_FILE.exists():
         saved = json.loads(STATE_FILE.read_text())
         state = SystemState(values=saved["values"], energy=saved["energy"])
+        # Progression du moteur : sans elle, le compteur de cycles repartirait
+        # à zéro chaque jour et le levier/anti-stagnation (3 cycles d'historique)
+        # ne pourraient jamais s'activer en usage quotidien.
+        engine.cycle_count = saved.get("cycle_count", 0)
+        engine.gap_history.extend(saved.get("gap_history", []))
+        engine.state_history.extend(saved.get("state_history", []))
     if MEMORY_FILE.exists():
         engine.memory.load(MEMORY_FILE)
 
@@ -54,7 +60,17 @@ def main() -> None:
     print(f"\nCycle {report.cycle} : écart {report.gap_before:.2f} → {report.gap_after:.2f}")
     print(CosmicView.render(engine, state))
 
-    STATE_FILE.write_text(json.dumps({"values": state.values, "energy": state.energy}))
+    STATE_FILE.write_text(
+        json.dumps(
+            {
+                "values": state.values,
+                "energy": state.energy,
+                "cycle_count": engine.cycle_count,
+                "gap_history": list(engine.gap_history),
+                "state_history": list(engine.state_history),
+            }
+        )
+    )
     engine.memory.save(MEMORY_FILE)
     print(f"\nÉtat sauvegardé dans {DATA_DIR}/ — à demain (60 secondes).")
 
