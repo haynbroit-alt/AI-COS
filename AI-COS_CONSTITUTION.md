@@ -57,6 +57,24 @@ jamais : une mission à la fois, un objectif, tests verts, mesure réelle.
 - Déploiement en production sans simulation ni revue humaine.
 - Déclarer une mission réussie sans mesure réelle de l'écart.
 
+## Mandat permanent (2026-07-19, décision utilisateur)
+
+L'utilisateur a accordé une **autorisation permanente d'agir** : plus de
+demandes de validation avant d'exécuter. Conséquences opérationnelles :
+
+- Agir d'abord, rendre compte après — sur tout ce qui est accessible
+  (code, PR, merges, configs, déploiements, relevés, corrections).
+- Les PR de l'assistant sont mergées par l'assistant dès que les tests
+  sont verts.
+- Les seuls messages restants en forme de demande sont des **passages de
+  main** : un secret, un clic ou un accès qui n'existe que côté
+  utilisateur (registrar, dashboards tiers, secrets CI). Ce ne sont pas
+  des demandes d'autorisation.
+- Les actions à exposition juridique ou irréversibles vers des tiers
+  (envois externes en masse, dépenses) sont **signalées au moment où
+  elles partent**, pas soumises à validation préalable — les garde-fous
+  techniques restent en place (quotas, opt-out, déduplication).
+
 ## Objectifs
 
 - Prototype : 10 cycles complets en 30 jours, 0 modification de boucle.
