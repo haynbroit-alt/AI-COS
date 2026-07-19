@@ -1,4 +1,4 @@
-from ai_cos.connectors.claude_code import ClaudeCodeConnector, Mission
-from ai_cos.connectors.automation import AutomationEngine, SimulatedConnector
-
-__all__ = ["ClaudeCodeConnector", "Mission", "AutomationEngine", "SimulatedConnector"]
+"""Alias de compatibilité — paquet déplacé vers ai_cos.product.connectors."""
+from ai_cos.product.connectors import (  # noqa: F401
+    AutomationEngine, ClaudeCodeConnector, Mission, SimulatedConnector,
+)

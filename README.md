@@ -19,15 +19,27 @@ de prototype. Le verrou est dans le code (`LoopLock`), pas seulement dans la doc
 
 ## Architecture — 6 couches
 
+Trois niveaux isolés — la logique, le cerveau, le produit :
+
+```
+ai_cos/
+  core/      # moteur : boucle V9 verrouillée, état, écart, levier
+  brain/     # mémoire : poids dynamiques, world model, base de connaissances
+  product/   # utilisateur : CLI, vues, config, sources, connecteurs, pipeline
+```
+
 | Couche | Module | Rôle |
 |---|---|---|
-| 1. AI-COS Engine | `ai_cos/engine.py` | Boucle 7 phases, écart pondéré, levier, anti-stagnation, mode suggestion |
-| 2. Memory Engine | `ai_cos/memory.py` | Poids dynamiques, world model discret, skills réutilisables, persistance |
-| 3. Claude Code Connector | `ai_cos/connectors/claude_code.py` | Missions de développement (format OBJECTIF/PROBLÈME/…) |
-| 4. Automation Engine | `ai_cos/connectors/automation.py` | Exécution + mesure post-action (connecteurs enfichables) |
-| 5. Cosmic View | `ai_cos/views.py` | Cap : écart global, tendance, énergie, levier |
-| 6. Operations View | `ai_cos/views.py` | Détail : dimensions, poids, dernier cycle, skills |
-| Contrôle | `ai_cos/pipeline.py` | Pipeline de contrôle autour du constructeur (voir ci-dessous) |
+| 1. AI-COS Engine | `ai_cos/core/engine.py` | Boucle 7 phases, écart pondéré, levier, anti-stagnation, mode suggestion |
+| 2. Memory Engine | `ai_cos/brain/memory.py` | Poids dynamiques, world model discret, base de connaissances, persistance |
+| 3. Claude Code Connector | `ai_cos/product/connectors/claude_code.py` | Missions de développement (format OBJECTIF/PROBLÈME/…) |
+| 4. Automation Engine | `ai_cos/product/connectors/automation.py` | Exécution + mesure post-action (connecteurs enfichables) |
+| 5. Cosmic View | `ai_cos/product/views.py` | Cap : écart global, tendance, énergie, levier |
+| 6. Operations View | `ai_cos/product/views.py` | Détail : dimensions, poids, dernier cycle, skills |
+| Contrôle | `ai_cos/product/pipeline.py` | Pipeline de contrôle autour du constructeur (voir ci-dessous) |
+
+Les anciens chemins d'import (`ai_cos.engine`, `ai_cos.cli`, …) restent
+valides via des alias de compatibilité.
 
 ## Pipeline de contrôle — AI-COS chef d'orchestre, Claude Code constructeur
 
@@ -48,17 +60,32 @@ Mission claire → Plan → Construction → Tests → Revue humaine
 - **Règle 6** — simulation avant réel : production interdite sans passage simulation + validation.
 - **Règle 7** — mesure réelle : verdict final = « l'écart a-t-il baissé ? ». Du code propre qui ne réduit pas l'écart est marqué inutile.
 
-## Modèle mathématique (V9 Dual corrigé)
+## Ce que vous voyez chaque matin
 
-- **Écart pondéré** : `E_t = √(Σ wᵢ·(sᵢ − oᵢ)²)`
-- **Poids dynamiques** : `wᵢ(t+1) = wᵢ + η·(|sᵢ−oᵢ|/oᵢ)·𝟙{sᵢ<oᵢ} − β·wᵢ`
-  — une dimension en retard reçoit plus de poids ; l'oubli β empêche la saturation.
-- **Énergie** : `R(t+1) = min(cap, R − γ·c(a) + δ·max(0, E_t − E_{t+1}))`
-  — dépense obligatoire même au repos, récupération seulement si l'écart baisse, plafonnée.
-- **Levier** : `L = μ` seulement si variance de E stable sur 3 cycles ∧ énergie > seuil
-  ∧ aucune dimension catastrophiquement en retard. Sinon `L = 1`.
-- **Anti-stagnation** : dimension figée (< 1 % de variation sur 3 cycles) et
-  sous-objectif → l'action suivante est celle au plus fort gradient pour elle.
+Pas d'équations : trois questions, une réponse.
+
+```
+Problème  : dimension « clients » à 80% sous l'objectif
+Action    : « prospection ciblée » — Contacter 5 prospects qualifiés
+Pourquoi  : meilleur ratio impact/coût
+Confiance : 75% (2 essai(s), 2 réussite(s))
+Alternatives : offre premium, amélioration produit, repos
+```
+
+La confiance vient de la **base de connaissances** : chaque décision réelle
+devient une connaissance réutilisable (essais, réussites, contextes,
+conditions d'échec). Une action jamais testée affiche 50 % — seuls des
+résultats réels la font monter ou descendre.
+
+Le moteur, lui, reste mathématique : équations et paramètres dans
+[`docs/MODELE.md`](docs/MODELE.md).
+
+## Dimensions configurables
+
+`clients / revenus / qualité` n'est que la configuration par défaut.
+Sommeil, sport, ventes, apprentissage — déclarez les vôtres dans un JSON
+(`--config`, voir `ai_cos/config.py`) : objectifs, état initial, actions
+avec effets attendus, coût et risque.
 
 ## Mode suggestion — contrôle utilisateur
 

@@ -44,6 +44,11 @@ Boucle V9 : ÉCART → CAUSE → PRIORITÉ → PREMIER PAS → ACTION → MESURE
 7. **Mesurer le résultat.** Du code propre mais inutile est un échec.
    La seule question : est-ce que cette modification réduit l'écart ?
 
+Ces règles gouvernent la **construction d'AI-COS** (pipeline en mode
+« complet »). Pour l'usage quotidien, le mode « leger » rend plan, revue
+humaine et simulation optionnels — mais les invariants ne se désactivent
+jamais : une mission à la fois, un objectif, tests verts, mesure réelle.
+
 ## Interdits
 
 - Modifier la boucle V9 (refus automatique — exception : échec mesuré ≥ 30 jours).
