@@ -19,15 +19,27 @@ de prototype. Le verrou est dans le code (`LoopLock`), pas seulement dans la doc
 
 ## Architecture — 6 couches
 
+Trois niveaux isolés — la logique, le cerveau, le produit :
+
+```
+ai_cos/
+  core/      # moteur : boucle V9 verrouillée, état, écart, levier
+  brain/     # mémoire : poids dynamiques, world model, base de connaissances
+  product/   # utilisateur : CLI, vues, config, sources, connecteurs, pipeline
+```
+
 | Couche | Module | Rôle |
 |---|---|---|
-| 1. AI-COS Engine | `ai_cos/engine.py` | Boucle 7 phases, écart pondéré, levier, anti-stagnation, mode suggestion |
-| 2. Memory Engine | `ai_cos/memory.py` | Poids dynamiques, world model discret, skills réutilisables, persistance |
-| 3. Claude Code Connector | `ai_cos/connectors/claude_code.py` | Missions de développement (format OBJECTIF/PROBLÈME/…) |
-| 4. Automation Engine | `ai_cos/connectors/automation.py` | Exécution + mesure post-action (connecteurs enfichables) |
-| 5. Cosmic View | `ai_cos/views.py` | Cap : écart global, tendance, énergie, levier |
-| 6. Operations View | `ai_cos/views.py` | Détail : dimensions, poids, dernier cycle, skills |
-| Contrôle | `ai_cos/pipeline.py` | Pipeline de contrôle autour du constructeur (voir ci-dessous) |
+| 1. AI-COS Engine | `ai_cos/core/engine.py` | Boucle 7 phases, écart pondéré, levier, anti-stagnation, mode suggestion |
+| 2. Memory Engine | `ai_cos/brain/memory.py` | Poids dynamiques, world model discret, base de connaissances, persistance |
+| 3. Claude Code Connector | `ai_cos/product/connectors/claude_code.py` | Missions de développement (format OBJECTIF/PROBLÈME/…) |
+| 4. Automation Engine | `ai_cos/product/connectors/automation.py` | Exécution + mesure post-action (connecteurs enfichables) |
+| 5. Cosmic View | `ai_cos/product/views.py` | Cap : écart global, tendance, énergie, levier |
+| 6. Operations View | `ai_cos/product/views.py` | Détail : dimensions, poids, dernier cycle, skills |
+| Contrôle | `ai_cos/product/pipeline.py` | Pipeline de contrôle autour du constructeur (voir ci-dessous) |
+
+Les anciens chemins d'import (`ai_cos.engine`, `ai_cos.cli`, …) restent
+valides via des alias de compatibilité.
 
 ## Pipeline de contrôle — AI-COS chef d'orchestre, Claude Code constructeur
 
