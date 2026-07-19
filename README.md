@@ -27,6 +27,26 @@ de prototype. Le verrou est dans le code (`LoopLock`), pas seulement dans la doc
 | 4. Automation Engine | `ai_cos/connectors/automation.py` | Exécution + mesure post-action (connecteurs enfichables) |
 | 5. Cosmic View | `ai_cos/views.py` | Cap : écart global, tendance, énergie, levier |
 | 6. Operations View | `ai_cos/views.py` | Détail : dimensions, poids, dernier cycle, skills |
+| Contrôle | `ai_cos/pipeline.py` | Pipeline de contrôle autour du constructeur (voir ci-dessous) |
+
+## Pipeline de contrôle — AI-COS chef d'orchestre, Claude Code constructeur
+
+On ne cherche pas du code parfait du premier coup : on met un système de
+contrôle autour du constructeur. Chaque transition est gardée par le code
+(`ControlPipeline`), pas par la discipline :
+
+```
+Mission claire → Plan → Construction → Tests → Revue humaine
+→ Simulation → Production → Mesure réelle
+```
+
+- **Règle 1** — une mission = un objectif : objectif multiple refusé, critère de réussite obligatoire.
+- **Règle 2** — plan avant le code : fichiers, risques, stratégie, tests prévus, approbation humaine.
+- **Règle 3** — tests obligatoires : cas normal + cas erreur + cas limite, rouge = retour construction.
+- **Règle 4** — petites modifications : une seule mission en vol à la fois.
+- **Règle 5** — source de vérité : [`AI-COS_CONSTITUTION.md`](AI-COS_CONSTITUTION.md) — le pipeline refuse de démarrer sans elle.
+- **Règle 6** — simulation avant réel : production interdite sans passage simulation + validation.
+- **Règle 7** — mesure réelle : verdict final = « l'écart a-t-il baissé ? ». Du code propre qui ne réduit pas l'écart est marqué inutile.
 
 ## Modèle mathématique (V9 Dual corrigé)
 
