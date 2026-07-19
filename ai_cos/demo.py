@@ -18,44 +18,25 @@ Usage : python -m ai_cos.demo
 
 from __future__ import annotations
 
+from ai_cos.config import load_config
 from ai_cos.connectors import AutomationEngine, ClaudeCodeConnector, SimulatedConnector
 from ai_cos.engine import AICOSEngine
 from ai_cos.memory import MemoryEngine
-from ai_cos.state import Action, Objective, SystemState, REST
+from ai_cos.state import Action, SystemState
 from ai_cos.views import CosmicView, OperationsView
 
 
-def build_scenario() -> tuple[AICOSEngine, SystemState, list[Action], AutomationEngine]:
-    objective = Objective(targets={"clients": 10, "revenus": 5000, "qualite": 8})
-    state = SystemState(values={"clients": 2, "revenus": 800, "qualite": 5}, energy=100.0)
+def build_scenario(
+    config_path: str | None = None,
+) -> tuple[AICOSEngine, SystemState, list[Action], AutomationEngine]:
+    """Construit moteur, état et actions depuis une configuration.
+
+    Sans chemin : la configuration par défaut (clients/revenus/qualité).
+    Les dimensions sont entièrement configurables — voir ai_cos/config.py.
+    """
+    objective, state, actions = load_config(config_path)
     memory = MemoryEngine(objective)
     engine = AICOSEngine(objective, memory)
-
-    actions = [
-        Action(
-            name="prospection ciblée",
-            gradients={"clients": 1.2, "revenus": 150},
-            cost=4,
-            risk=0.5,
-            description="Contacter 5 prospects qualifiés",
-        ),
-        Action(
-            name="offre premium",
-            gradients={"revenus": 600, "qualite": 0.2},
-            cost=5,
-            risk=1.0,
-            description="Lancer une offre à plus forte marge",
-        ),
-        Action(
-            name="amélioration produit",
-            gradients={"qualite": 0.6, "clients": 0.3},
-            cost=3,
-            risk=0.2,
-            description="Corriger le principal irritant client",
-        ),
-        REST,
-    ]
-
     automation = AutomationEngine(default_connector=SimulatedConnector(noise=0.1, seed=42))
     return engine, state, actions, automation
 

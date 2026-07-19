@@ -25,6 +25,7 @@ import os
 import sys
 from pathlib import Path
 
+from ai_cos.config import ConfigError
 from ai_cos.demo import build_scenario
 from ai_cos.sources import DataSource, DataSourceError, JsonFileSource, StripeSource, measure_since
 from ai_cos.state import REST, SystemState
@@ -103,10 +104,19 @@ def main(argv: list[str] | None = None) -> None:
         default=os.environ.get("AI_COS_DATA_DIR", ".ai_cos"),
         help="Répertoire d'état et de mémoire (défaut : .ai_cos, ou AI_COS_DATA_DIR)",
     )
+    parser.add_argument(
+        "--config",
+        default=os.environ.get("AI_COS_CONFIG"),
+        help="JSON de dimensions/objectifs/actions (défaut : scénario intégré)",
+    )
     args = parser.parse_args(argv)
     configure_paths(args.data_dir)
 
-    engine, state, actions, automation = build_scenario()
+    try:
+        engine, state, actions, automation = build_scenario(args.config)
+    except ConfigError as exc:
+        print(f"Erreur configuration : {exc}")
+        sys.exit(1)
     actions_by_name = {a.name: a for a in actions}
     try:
         source = make_source(args.source)
