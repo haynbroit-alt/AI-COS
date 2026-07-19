@@ -1,0 +1,9 @@
+{
+  "weights": {
+    "clients": 1.0,
+    "revenus": 1.0,
+    "qualite": 1.0
+  },
+  "observed_effects": {},
+  "skills": []
+}

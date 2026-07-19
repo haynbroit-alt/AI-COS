@@ -20,6 +20,9 @@ def run_day(monkeypatch, answer="a", argv=()):
 @pytest.fixture(autouse=True)
 def isolated_dir(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("AI_COS_DATA_DIR", raising=False)
+    cli.configure_paths(".ai_cos")  # les tests --data-dir ne fuient pas sur les suivants
+    yield
 
 
 # --- Mode simulation --------------------------------------------------------
@@ -113,3 +116,21 @@ def test_real_mode_missing_source_exits_cleanly(tmp_path, monkeypatch, capsys):
     with pytest.raises(SystemExit):
         run_day(monkeypatch, argv=["--source", str(tmp_path / "absent.json")])
     assert "Erreur source" in capsys.readouterr().out
+
+
+# --- Répertoire d'état configurable -----------------------------------------
+
+
+def test_custom_data_dir(tmp_path, monkeypatch):
+    """Cas normal : --data-dir place état et mémoire dans un répertoire suivi."""
+    run_day(monkeypatch, argv=["--data-dir", "terrain"])
+    assert (tmp_path / "terrain" / "state.json").exists()
+    assert (tmp_path / "terrain" / "memory.json").exists()
+    assert not (tmp_path / ".ai_cos").exists()
+
+
+def test_data_dir_from_env(tmp_path, monkeypatch):
+    """Cas limite : AI_COS_DATA_DIR sans drapeau explicite."""
+    monkeypatch.setenv("AI_COS_DATA_DIR", "campagne")
+    run_day(monkeypatch)
+    assert (tmp_path / "campagne" / "state.json").exists()
