@@ -1,0 +1,15 @@
+[project]
+name = "ai-cos"
+version = "9.0.0"
+description = "AI-COS V9 — système d'exploitation décisionnel personnel (prototype)"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["ai_cos*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
