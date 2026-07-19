@@ -6,10 +6,10 @@ C'est le critère de succès de la spec V9 :
 
 import json
 
-from ai_cos.demo import build_scenario, run_prototype
-from ai_cos.memory import MemoryEngine
-from ai_cos.state import Objective, SystemState
-from ai_cos.views import CosmicView, OperationsView
+from ai_cos.product.demo import build_scenario, run_prototype
+from ai_cos.brain.memory import MemoryEngine
+from ai_cos.core.state import Objective, SystemState
+from ai_cos.product.views import CosmicView, OperationsView
 
 
 def test_ten_full_cycles_zero_loop_modifications():

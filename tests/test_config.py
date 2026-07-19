@@ -4,8 +4,8 @@ import json
 
 import pytest
 
-from ai_cos.config import ConfigError, load_config, parse_config
-from ai_cos.demo import build_scenario
+from ai_cos.product.config import ConfigError, load_config, parse_config
+from ai_cos.product.demo import build_scenario
 
 
 def test_default_config_matches_historic_scenario():
@@ -27,8 +27,8 @@ def test_fully_custom_dimensions_run_a_cycle():
         ],
     }
     objective, state, actions = parse_config(raw)
-    from ai_cos.engine import AICOSEngine
-    from ai_cos.memory import MemoryEngine
+    from ai_cos.core.engine import AICOSEngine
+    from ai_cos.brain.memory import MemoryEngine
 
     engine = AICOSEngine(objective, MemoryEngine(objective))
     suggestion = engine.suggest(state, actions)

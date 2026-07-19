@@ -4,9 +4,9 @@ import math
 
 import pytest
 
-from ai_cos.engine import AICOSEngine, LoopLockedError
-from ai_cos.memory import MemoryEngine
-from ai_cos.state import Action, Objective, SystemState, REST
+from ai_cos.core.engine import AICOSEngine, LoopLockedError
+from ai_cos.brain.memory import MemoryEngine
+from ai_cos.core.state import Action, Objective, SystemState, REST
 
 
 @pytest.fixture

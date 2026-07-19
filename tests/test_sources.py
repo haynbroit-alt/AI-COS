@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from ai_cos.sources import (
+from ai_cos.product.sources import (
     DataSourceError,
     JsonFileSource,
     StripeSource,

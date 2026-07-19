@@ -6,9 +6,9 @@ réutilisable (contexte, fréquence, confiance, conditions d'échec).
 
 import pytest
 
-from ai_cos.engine import AICOSEngine
-from ai_cos.memory import ActionKnowledge, MemoryEngine, Skill
-from ai_cos.state import Action, Objective, SystemState
+from ai_cos.core.engine import AICOSEngine
+from ai_cos.brain.memory import ActionKnowledge, MemoryEngine, Skill
+from ai_cos.core.state import Action, Objective, SystemState
 
 
 @pytest.fixture
