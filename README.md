@@ -73,11 +73,34 @@ choisit ; chaque `CycleReport` trace `chosen_by_user`.
 python -m ai_cos.demo
 
 # Boucle quotidienne interactive (60 secondes/jour, état persisté dans .ai_cos/)
-python -m ai_cos.cli
+python -m ai_cos.cli                          # mode simulation
+python -m ai_cos.cli --source journal.json    # mode RÉEL : journal JSON
+python -m ai_cos.cli --source stripe          # mode RÉEL : API Stripe (STRIPE_API_KEY)
 
-# Preuve : 24 tests (convergence, équilibre, énergie, verrou V9…)
+# Preuve : suite de tests (convergence, équilibre, énergie, verrou V9…)
 python -m pytest
 ```
+
+## Mode réel — mesure différée
+
+En simulation, l'effet d'une action est appliqué immédiatement. Dans le monde
+réel, il ne se mesure qu'au relevé suivant. Le mode réel (`--source`) inverse
+donc la boucle :
+
+1. **Matin J** : relevé de la source → les deltas réels soldent l'action
+   décidée en J−1 (MESURE + APPRENTISSAGE), sauvegardés immédiatement.
+2. Le moteur suggère l'action du jour ; l'utilisateur choisit.
+3. L'action part dans le monde (vous ou l'Automation Engine l'exécutez).
+4. **Matin J+1** : le relevé mesure ce qu'elle a réellement produit.
+
+Sources disponibles (`ai_cos/sources.py`) :
+- **`JsonFileSource`** — un journal JSON (`{"clients": 3, "revenus": 1250, "qualite": 6}`)
+  alimenté à la main ou par n'importe quel export (CRM, analytics, cron).
+- **`StripeSource`** — clients (customers) et revenus (charges réussies) lus
+  depuis l'API Stripe ; clé dans `STRIPE_API_KEY`, jamais commitée.
+
+Une action qui ne produit rien donne des deltas nuls : le world model
+l'apprend et la suggestion suivante change — aucun progrès fantôme.
 
 ## Critère de succès du prototype
 
