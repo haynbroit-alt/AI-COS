@@ -54,16 +54,30 @@ class LoopLock:
 
 @dataclass
 class Suggestion:
-    """Le moteur propose ; l'utilisateur garde le contrôle."""
+    """Le moteur propose ; l'utilisateur garde le contrôle.
+
+    Le moteur reste mathématique ; la suggestion parle le langage
+    utilisateur : quel est le problème, que faire, pourquoi, avec quelle
+    confiance — fondée sur les essais réels de la base de connaissances.
+    """
 
     action: Action
     rationale: str
+    problem: str = ""
+    confidence: float = 0.5
+    basis: str = ""
     alternatives: list[Action] = field(default_factory=list)
     lever_active: bool = False
     forced_by_stagnation: str | None = None
 
     def describe(self) -> str:
-        lines = [f"Suggestion : « {self.action.name} » — {self.rationale}"]
+        lines = [
+            f"Problème  : {self.problem}" if self.problem else None,
+            f"Action    : « {self.action.name} »"
+            + (f" — {self.action.description}" if self.action.description else ""),
+            f"Pourquoi  : {self.rationale}",
+            f"Confiance : {self.confidence:.0%} ({self.basis})" if self.basis else None,
+        ]
         if self.forced_by_stagnation:
             lines.append(
                 f"Diversification anti-stagnation : dimension "
@@ -74,7 +88,7 @@ class Suggestion:
         if self.alternatives:
             names = ", ".join(a.name for a in self.alternatives)
             lines.append(f"Alternatives : {names}")
-        return "\n".join(lines)
+        return "\n".join(line for line in lines if line)
 
 
 @dataclass
@@ -228,9 +242,13 @@ class AICOSEngine:
                 f"(impact projeté {self.expected_impact(state, best, lever):.2f}, "
                 f"coût {best.cost:.0f})"
             )
+        knowledge = self.memory.knowledge_for(best.name)
         return Suggestion(
             action=best,
             rationale=rationale,
+            problem=self.identify_cause(state),
+            confidence=knowledge.confidence,
+            basis=knowledge.basis(),
             alternatives=others[:3],
             lever_active=lever > 1.0,
             forced_by_stagnation=stagnant,
