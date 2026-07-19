@@ -121,7 +121,11 @@ class ControlledMission:
 class ControlPipeline:
     """Chef d'orchestre du constructeur. AI-COS contrôle la direction."""
 
-    def __init__(self, root: str | Path = ".") -> None:
+    MODES = ("complet", "leger")
+
+    def __init__(self, root: str | Path = ".", mode: str = "complet") -> None:
+        if mode not in self.MODES:
+            raise PipelineError(f"Mode inconnu « {mode} » — choix : {self.MODES}")
         path = Path(root) / CONSTITUTION_FILE
         if not path.exists():
             raise PipelineError(
@@ -129,6 +133,12 @@ class ControlPipeline:
                 "fonctionner sans source de vérité (règle 5)."
             )
         self.constitution = path.read_text()
+        # « complet » : gouvernance intégrale, pour développer AI-COS.
+        # « leger » : usage quotidien — plan, revue humaine et simulation
+        # deviennent optionnels, mais les invariants ne se désactivent
+        # jamais : une mission à la fois, un objectif, tests verts,
+        # mesure réelle.
+        self.mode = mode
         self.in_flight: ControlledMission | None = None
         self.completed: list[ControlledMission] = []
 
@@ -170,7 +180,12 @@ class ControlPipeline:
     # --- Construction ------------------------------------------------------
 
     def record_build(self, note: str = "livrable produit") -> None:
-        cm = self._require(Stage.PLAN_APPROUVE)
+        if self.mode == "leger":
+            # Plan optionnel : on peut construire dès la soumission,
+            # ou après un plan approuvé si l'utilisateur en a fait un.
+            cm = self._require_any((Stage.SOUMISE, Stage.PLAN_APPROUVE))
+        else:
+            cm = self._require(Stage.PLAN_APPROUVE)
         cm._advance(Stage.CONSTRUITE, note)
 
     # --- Règle 3 : tests obligatoires --------------------------------------
@@ -210,10 +225,14 @@ class ControlPipeline:
         cm._advance(Stage.SIMULEE, note)
 
     def deploy_to_production(self) -> None:
-        cm = self._require(
-            Stage.SIMULEE,
-            hint="production interdite sans passage par la simulation (règle 6)",
-        )
+        if self.mode == "leger":
+            # Revue humaine et simulation optionnelles : tests verts suffisent.
+            cm = self._require_any((Stage.TESTEE, Stage.REVUE, Stage.SIMULEE))
+        else:
+            cm = self._require(
+                Stage.SIMULEE,
+                hint="production interdite sans passage par la simulation (règle 6)",
+            )
         cm._advance(Stage.EN_PRODUCTION, "déploiement progressif")
 
     # --- Règle 7 : mesure réelle --------------------------------------------
@@ -230,12 +249,16 @@ class ControlPipeline:
     # --- Interne ------------------------------------------------------------
 
     def _require(self, stage: Stage, hint: str = "") -> ControlledMission:
+        return self._require_any((stage,), hint)
+
+    def _require_any(self, stages: tuple[Stage, ...], hint: str = "") -> ControlledMission:
         if self.in_flight is None:
             raise PipelineError("Aucune mission en vol.")
-        if self.in_flight.stage is not stage:
+        if self.in_flight.stage not in stages:
+            expected = " ou ".join(f"« {s.value} »" for s in stages)
             message = (
                 f"Étape « {self.in_flight.stage.value} » : transition refusée "
-                f"(attendu : « {stage.value} »)."
+                f"(attendu : {expected})."
             )
             if hint:
                 message += f" {hint}."

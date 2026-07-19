@@ -197,3 +197,50 @@ def test_measure_requires_production(pipeline):
     run_until(pipeline, Stage.SIMULEE)
     with pytest.raises(PipelineError):
         pipeline.measure(gap_before=100.0, gap_after=50.0)
+
+
+# --- Mode léger : gouvernance optionnelle, invariants intacts ----------------
+
+
+def test_light_mode_short_path():
+    """Cas normal : soumission → construction → tests → production → mesure."""
+    pipeline = ControlPipeline(root=ROOT, mode="leger")
+    pipeline.submit(make_mission())
+    pipeline.record_build()
+    pipeline.record_tests(TestReport(passed=10, failed=0))
+    pipeline.deploy_to_production()
+    verdict = pipeline.measure(gap_before=100.0, gap_after=70.0)
+    assert verdict.useful
+    assert pipeline.completed[0].stage is Stage.MESUREE
+
+
+def test_light_mode_keeps_invariants():
+    """Cas erreur : même en léger, une mission à la fois, tests verts exigés,
+    pas de production sans tests."""
+    pipeline = ControlPipeline(root=ROOT, mode="leger")
+    pipeline.submit(make_mission())
+    with pytest.raises(PipelineError, match="déjà en vol"):
+        pipeline.submit(make_mission("Autre objectif"))
+    pipeline.record_build()
+    with pytest.raises(PipelineError, match="rouges"):
+        pipeline.record_tests(TestReport(passed=3, failed=1))
+    with pytest.raises(PipelineError, match="refusée"):
+        pipeline.deploy_to_production()  # toujours pas de tests verts
+
+
+def test_light_mode_optional_stages_still_usable():
+    """Cas limite : en léger, plan et revue restent utilisables si on veut."""
+    pipeline = ControlPipeline(root=ROOT, mode="leger")
+    pipeline.submit(make_mission())
+    pipeline.attach_plan(make_plan())
+    pipeline.approve_plan("humain")
+    pipeline.record_build()
+    pipeline.record_tests(TestReport(passed=10, failed=0))
+    pipeline.human_review("humain", approved=True)
+    pipeline.deploy_to_production()
+    assert pipeline.in_flight.stage is Stage.EN_PRODUCTION
+
+
+def test_unknown_mode_rejected():
+    with pytest.raises(PipelineError, match="Mode inconnu"):
+        ControlPipeline(root=ROOT, mode="anarchie")
