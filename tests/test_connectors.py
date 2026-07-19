@@ -2,9 +2,9 @@
 
 import pytest
 
-from ai_cos.connectors import AutomationEngine, ClaudeCodeConnector, SimulatedConnector
-from ai_cos.connectors.claude_code import Mission
-from ai_cos.state import Action, SystemState
+from ai_cos.product.connectors import AutomationEngine, ClaudeCodeConnector, SimulatedConnector
+from ai_cos.product.connectors.claude_code import Mission
+from ai_cos.core.state import Action, SystemState
 
 
 def test_mission_contains_all_required_sections():

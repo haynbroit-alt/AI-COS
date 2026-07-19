@@ -9,7 +9,7 @@ import json
 
 import pytest
 
-from ai_cos import cli
+from ai_cos.product import cli
 
 
 def run_day(monkeypatch, answer="a", argv=()):

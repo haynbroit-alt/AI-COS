@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from ai_cos.connectors.claude_code import ClaudeCodeConnector
-from ai_cos.pipeline import (
+from ai_cos.product.connectors.claude_code import ClaudeCodeConnector
+from ai_cos.product.pipeline import (
     CONSTITUTION_FILE,
     ControlPipeline,
     PipelineError,
