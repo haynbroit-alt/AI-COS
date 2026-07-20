@@ -1,1 +1,1 @@
-{"values": {"clients": 0.0, "revenus": 0.0, "qualite": 5.0}, "energy": 95.0, "cycle_count": 1, "gap_history": [5000.010899988119], "state_history": [{"clients": 0.0, "revenus": 0.0, "qualite": 5.0}], "pending_action": "prospection cibl\u00e9e"}
+{"values": {"clients": 0.0, "revenus": 0.0, "qualite": 5.0}, "energy": 91.0, "cycle_count": 2, "gap_history": [5000.010899988119, 5590.181979372407], "state_history": [{"clients": 0.0, "revenus": 0.0, "qualite": 5.0}, {"clients": 0.0, "revenus": 0.0, "qualite": 5.0}], "pending_action": "am\u00e9lioration produit"}
