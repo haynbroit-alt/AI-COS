@@ -1,9 +1,38 @@
 {
   "weights": {
-    "clients": 1.0,
-    "revenus": 1.0,
-    "qualite": 1.0
+    "clients": 1.25,
+    "revenus": 1.25,
+    "qualite": 1.0625
   },
-  "observed_effects": {},
-  "skills": []
+  "observed_effects": {
+    "offre premium": {
+      "clients": 0.0,
+      "revenus": 0.0,
+      "qualite": 0.0
+    }
+  },
+  "skills": [
+    {
+      "action": "offre premium",
+      "context": "dimension « clients » à 100% sous l'objectif",
+      "gap_before": 5000.010899988119,
+      "gap_after": 5000.010899988119,
+      "cycle": 1
+    }
+  ],
+  "knowledge": {
+    "offre premium": {
+      "action": "offre premium",
+      "trials": 1,
+      "successes": 0,
+      "total_gap_reduction": 0.0,
+      "contexts": {
+        "dimension « clients » à 100% sous l'objectif": 1
+      },
+      "failure_contexts": {
+        "dimension « clients » à 100% sous l'objectif": 1
+      },
+      "last_cycle": 1
+    }
+  }
 }
