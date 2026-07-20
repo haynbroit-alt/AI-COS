@@ -1,0 +1,11 @@
+{
+  "date": "2026-07-20",
+  "steps": {
+    "read_cycle": "failed",
+    "push": "done"
+  },
+  "fail_counts": {
+    "read_cycle": 1,
+    "push": 0
+  }
+}
