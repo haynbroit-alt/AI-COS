@@ -1,0 +1,49 @@
+{
+  "defaults": {
+    "from": "Charfa — Velyx <hello@velyx.org>",
+    "reply_to": "velyx.org@outlook.com",
+    "headers": {"List-Unsubscribe": "<mailto:hello@velyx.org?subject=unsubscribe>"}
+  },
+  "targets": [
+    {
+      "company": "Captain Prospect",
+      "email": "hello@captainprospect.fr",
+      "status": "pending",
+      "idempotency_key": "velyx-relance-captainprospect-20260722",
+      "subject": "Re: Détecter l'intention d'achat avant l'approche",
+      "text": "Bonjour,\n\nJe reviens en un mot sur mon message de lundi à propos de Velyx.\n\nPas de souci si le timing n'est pas le bon — un simple « pas pour nous » et je vous laisse tranquille. Si détecter les signaux d'achat en amont de vos SDR vous parle, 15 min suffisent à vous montrer.\n\nCharfa — Velyx\n\nPour ne plus recevoir de message : répondez « stop »."
+    },
+    {
+      "company": "Biz Agency",
+      "email": "contact@biz-agency.fr",
+      "status": "pending",
+      "idempotency_key": "velyx-relance-bizagency-20260722",
+      "subject": "Re: Alimenter votre pipeline en signaux chauds",
+      "text": "Bonjour,\n\nJe reviens en un mot sur mon message de lundi à propos de Velyx.\n\nPas de souci si le timing n'est pas le bon — un simple « pas pour nous » et je vous laisse tranquille. Si alimenter votre pipeline garanti avec des signaux chauds vous parle, 15 min suffisent à vous montrer.\n\nCharfa — Velyx\n\nPour ne plus recevoir de message : répondez « stop »."
+    },
+    {
+      "company": "HelpIn Agency",
+      "email": "contact@helpinagency.com",
+      "status": "pending",
+      "idempotency_key": "velyx-relance-helpin-20260722",
+      "subject": "Re: Des signaux d'achat pour tenir le rythme 72h",
+      "text": "Bonjour,\n\nJe reviens en un mot sur mon message de lundi à propos de Velyx.\n\nPas de souci si le timing n'est pas le bon — un simple « pas pour nous » et je vous laisse tranquille. Si un flux de signaux chauds pour tenir votre promesse 72h vous parle, 15 min suffisent à vous montrer.\n\nCharfa — Velyx\n\nPour ne plus recevoir de message : répondez « stop »."
+    },
+    {
+      "company": "D2B Consulting",
+      "email": "info@d2bconsulting.fr",
+      "status": "pending",
+      "idempotency_key": "velyx-relance-d2b-20260722",
+      "subject": "Re: Un cran avant votre génération de leads",
+      "text": "Bonjour,\n\nJe reviens en un mot sur mon message de lundi à propos de Velyx.\n\nPas de souci si le timing n'est pas le bon — un simple « pas pour nous » et je vous laisse tranquille. Si capter le signal un cran avant votre génération de leads vous parle, 15 min suffisent à vous montrer.\n\nCharfa — Velyx\n\nPour ne plus recevoir de message : répondez « stop »."
+    },
+    {
+      "company": "Agence de Prospection",
+      "email": "contact@agence-de-prospection.fr",
+      "status": "bounced",
+      "idempotency_key": "velyx-relance-agencedeprospection-20260722",
+      "subject": "Re: Repérer les comptes qui expriment déjà un besoin",
+      "text": "(retirée — envoi initial bounced le 2026-07-20)"
+    }
+  ]
+}
