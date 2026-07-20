@@ -9,6 +9,8 @@
    **et** `velyx.org@outlook.com`.
 2. **Retirer tout répondant** (intérêt, refus, ou « stop ») du lot ci-dessous.
 3. N'envoyer qu'aux silencieux. Cap 5, 1 relance unique.
+4. **Déjà retiré** : Agence de Prospection (envoi initial bounced le 20/07).
+   Lot de relance = 4 cibles vivantes max.
 
 ## Paramètres d'envoi (identiques pour les 5)
 
@@ -65,18 +67,8 @@ Pour ne plus recevoir de message : répondez « stop ».
 
 ---
 
-## 4. Agence de Prospection — contact@agence-de-prospection.fr
-**Sujet :** Re: Repérer les comptes qui expriment déjà un besoin
-
-Bonjour,
-
-Je reviens en un mot sur mon message de lundi à propos de Velyx.
-
-Pas de souci si le timing n'est pas le bon — un simple « pas pour nous » et je vous laisse tranquille. Si prioriser les comptes qui expriment déjà un besoin vous parle, 15 min suffisent à vous montrer.
-
-Charfa — Velyx
-
-Pour ne plus recevoir de message : répondez « stop ».
+## 4. ~~Agence de Prospection — contact@agence-de-prospection.fr~~ — RETIRÉE
+Envoi initial **bounced** (adresse invalide, 2026-07-20). Ne pas relancer.
 
 ---
 
