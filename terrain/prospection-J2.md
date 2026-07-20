@@ -29,6 +29,15 @@ opt-out inclus → cold B2B défendable au sens CNIL.
 
 - `rgpd@leadactiv.fr` — adresse dédiée RGPD, hors périmètre outreach.
 
+## Suivi des réponses
+
+- Boîte relevée par l'utilisateur : **velyx.org@outlook.com**.
+- Les 5 envois J2 partent de `hello@velyx.org` sans `replyTo` → réponses sur
+  `hello@velyx.org`, relevables via Resend (`list-received-emails`, réception
+  activée sur le domaine). À surveiller.
+- **Envois suivants** : positionner `replyTo: velyx.org@outlook.com` pour que
+  les réponses arrivent directement dans la boîte relevée.
+
 ## Mesure
 
 Deltas réels au relevé Stripe de demain (J3, 2026-07-21). Toute réponse
