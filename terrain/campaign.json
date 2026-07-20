@@ -1,0 +1,12 @@
+{
+  "campaign": "velyx-agences-2026-07",
+  "started": "2026-07-20",
+  "product": "Velyx Pro",
+  "contacts": [
+    {"company": "Captain Prospect", "email": "hello@captainprospect.fr", "sent": true, "delivered": true, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0},
+    {"company": "Biz Agency", "email": "contact@biz-agency.fr", "sent": true, "delivered": true, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0},
+    {"company": "HelpIn Agency", "email": "contact@helpinagency.com", "sent": true, "delivered": true, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0},
+    {"company": "D2B Consulting", "email": "info@d2bconsulting.fr", "sent": true, "delivered": true, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0},
+    {"company": "Agence de Prospection", "email": "contact@agence-de-prospection.fr", "sent": true, "delivered": false, "bounced": true, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0}
+  ]
+}
