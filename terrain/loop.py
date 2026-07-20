@@ -202,7 +202,9 @@ def _real_plan_and_steps(relance: bool):
     if relance:
         steps["relance"] = do_relance
         plan.append("relance")
-    plan.append("push")
+    # En CI (GitHub Actions), le workflow gère le commit/push : LOOP_SKIP_PUSH=1.
+    if not os.environ.get("LOOP_SKIP_PUSH"):
+        plan.append("push")
     return plan, steps
 
 
@@ -229,7 +231,9 @@ def _main(argv: list[str]) -> int:
         print("ALERTE — intervention humaine requise :", file=__import__("sys").stderr)
         for r in rep["reasons"]:
             print(f"  - {r}", file=__import__("sys").stderr)
-    return 0
+    # Code 3 = besoin humain : en CI, le job GitHub Actions échoue → notification
+    # e-mail à l'utilisateur (canal d'alerte, sans session de chat). 0 sinon.
+    return 3 if rep["needs_human"] else 0
 
 
 if __name__ == "__main__":
