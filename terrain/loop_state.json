@@ -5,7 +5,7 @@
     "push": "done"
   },
   "fail_counts": {
-    "read_cycle": 1,
+    "read_cycle": 2,
     "push": 0
   }
 }

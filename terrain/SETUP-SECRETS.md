@@ -1,4 +1,23 @@
-# Secrets d'environnement — robustesse des Routines (passage de main)
+# Secrets — robustesse & autonomie (passage de main)
+
+## ⚠️ Deux runners, deux emplacements de secrets — ne pas confondre
+
+| Runner | Où mettre les secrets | Lecture |
+|---|---|---|
+| **GitHub Actions** (`.github/workflows/terrain-daily.yml`) — runner **autonome, sans session de chat** (recommandé) | **GitHub → Settings → Secrets and variables → Actions → Repository secrets** | `${{ secrets.STRIPE_API_KEY }}` injecté dans le job |
+| **Session Claude** (Routine `run_daily.sh`) | **Réglages d'environnement Claude Code** (là où vit `GITHUB_TOKEN`) | `os.environ` dans le shell |
+
+Les secrets **Actions** ne sont **pas** visibles dans le shell d'une session
+Claude, et inversement. `STRIPE_API_KEY`/`RESEND_API_KEY` posés en *Repository
+secrets* alimentent le **workflow GitHub Actions** — pas la Routine de session.
+
+**Chemin retenu** : GitHub Actions (`terrain-daily`) tourne tous les jours à
+06:00 UTC, entièrement sur l'infra GitHub, sans aucune session de chat. Alerte
+= échec du job (e-mail GitHub) uniquement si `needs_human`.
+
+---
+
+## (Annexe) Mode session — secrets d'environnement Claude Code
 
 Les Routines programmées (relevé quotidien, relance J+2) ne dépendent **plus**
 de la reconnexion des connecteurs MCP. Elles passent par les **API directes**
