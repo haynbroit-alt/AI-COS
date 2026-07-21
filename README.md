@@ -38,8 +38,9 @@ ai_cos/
 | 6. Operations View | `ai_cos/product/views.py` | Détail : dimensions, poids, dernier cycle, skills |
 | Contrôle | `ai_cos/product/pipeline.py` | Pipeline de contrôle autour du constructeur (voir ci-dessous) |
 
-Les anciens chemins d'import (`ai_cos.engine`, `ai_cos.cli`, …) restent
-valides via des alias de compatibilité.
+Chaque module a un seul chemin canonique (`ai_cos.core.*`, `ai_cos.brain.*`,
+`ai_cos.product.*`). Unique alias conservé : `python -m ai_cos.cli`, point
+d'entrée officiel de la Routine terrain, qui délègue à `ai_cos.product.cli`.
 
 ## Pipeline de contrôle — AI-COS chef d'orchestre, Claude Code constructeur
 
@@ -84,7 +85,7 @@ Le moteur, lui, reste mathématique : équations et paramètres dans
 
 `clients / revenus / qualité` n'est que la configuration par défaut.
 Sommeil, sport, ventes, apprentissage — déclarez les vôtres dans un JSON
-(`--config`, voir `ai_cos/config.py`) : objectifs, état initial, actions
+(`--config`, voir `ai_cos/product/config.py`) : objectifs, état initial, actions
 avec effets attendus, coût et risque.
 
 ## Mode suggestion — contrôle utilisateur
@@ -97,7 +98,7 @@ choisit ; chaque `CycleReport` trace `chosen_by_user`.
 
 ```bash
 # Démo prototype : 10 cycles complets, bilan final
-python -m ai_cos.demo
+python -m ai_cos.product.demo
 
 # Boucle quotidienne interactive (60 secondes/jour, état persisté dans .ai_cos/)
 python -m ai_cos.cli                          # mode simulation
@@ -120,7 +121,7 @@ donc la boucle :
 3. L'action part dans le monde (vous ou l'Automation Engine l'exécutez).
 4. **Matin J+1** : le relevé mesure ce qu'elle a réellement produit.
 
-Sources disponibles (`ai_cos/sources.py`) :
+Sources disponibles (`ai_cos/product/sources.py`) :
 - **`JsonFileSource`** — un journal JSON (`{"clients": 3, "revenus": 1250, "qualite": 6}`)
   alimenté à la main ou par n'importe quel export (CRM, analytics, cron).
 - **`StripeSource`** — clients (customers) et revenus (charges réussies) lus
