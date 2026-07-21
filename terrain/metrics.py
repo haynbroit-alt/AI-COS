@@ -21,10 +21,15 @@ def _rate(num: int, den: int) -> float | None:
 
 @dataclass
 class Funnel:
+    """La métrique qui compte n'est pas « emails envoyés » mais la chaîne :
+    signal → réponse positive → rapport demandé → appel → paiement."""
+
     sent: int
     delivered: int
     bounced: int
     replies: int
+    positive_replies: int
+    report_requests: int
     meetings: int
     signed: int
     revenue_eur: float
@@ -38,8 +43,16 @@ class Funnel:
         return _rate(self.replies, self.delivered)
 
     @property
+    def positive_rate(self) -> float | None:
+        return _rate(self.positive_replies, self.replies)
+
+    @property
+    def report_rate(self) -> float | None:
+        return _rate(self.report_requests, self.positive_replies)
+
+    @property
     def meeting_rate(self) -> float | None:
-        return _rate(self.meetings, self.replies)
+        return _rate(self.meetings, self.report_requests)
 
     @property
     def sign_rate(self) -> float | None:
@@ -54,11 +67,15 @@ class Funnel:
             "delivered": self.delivered,
             "bounced": self.bounced,
             "replies": self.replies,
+            "positive_replies": self.positive_replies,
+            "report_requests": self.report_requests,
             "meetings": self.meetings,
             "signed": self.signed,
             "revenue_eur": self.revenue_eur,
             "delivery_rate": pct(self.delivery_rate),
             "reply_rate": pct(self.reply_rate),
+            "positive_rate": pct(self.positive_rate),
+            "report_rate": pct(self.report_rate),
             "meeting_rate": pct(self.meeting_rate),
             "sign_rate": pct(self.sign_rate),
         }
@@ -74,6 +91,8 @@ def compute_funnel(contacts: list[dict]) -> Funnel:
         delivered=count("delivered"),
         bounced=count("bounced"),
         replies=count("replied"),
+        positive_replies=count("positive_reply"),
+        report_requests=count("report_requested"),
         meetings=count("meeting"),
         signed=count("signed"),
         revenue_eur=float(sum(c.get("revenue_eur", 0) or 0 for c in contacts)),

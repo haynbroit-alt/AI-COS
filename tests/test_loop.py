@@ -167,3 +167,20 @@ def test_funnel_division_par_zero(tmp_path):
     f = metrics.compute_funnel([])
     assert f.delivery_rate is None
     assert f.as_dict()["delivery_rate"] == "n/a"
+
+
+def test_funnel_chaine_valeur_complete(tmp_path):
+    # La métrique qui compte : réponse positive → rapport demandé → appel → paiement.
+    contacts = [
+        {"sent": True, "delivered": True, "replied": True, "positive_reply": True,
+         "report_requested": True, "meeting": True, "signed": True, "revenue_eur": 290},
+        {"sent": True, "delivered": True, "replied": True, "positive_reply": False},
+        {"sent": True, "delivered": True},
+    ]
+    f = metrics.compute_funnel(contacts)
+    assert f.replies == 2 and f.positive_replies == 1 and f.report_requests == 1
+    d = f.as_dict()
+    assert d["positive_rate"] == "50%"   # 1 positive / 2 réponses
+    assert d["report_rate"] == "100%"    # 1 rapport / 1 positive
+    assert d["meeting_rate"] == "100%"   # 1 appel / 1 rapport
+    assert d["sign_rate"] == "100%"      # 1 paiement / 1 appel
