@@ -101,6 +101,24 @@ def build_relance_target(contact: dict, today: str) -> dict:
     }
 
 
+def apply_last_event(contact: dict, event: str) -> bool:
+    """Applique un statut Resend (last_event) au contact. Renvoie True si changé.
+
+    bounced → exclusion définitive ; complained → « stop » ; delivered →
+    confirme la délivrance. Tout autre événement est ignoré."""
+    if event == "bounced" and not contact.get("bounced"):
+        contact["bounced"] = True
+        contact["delivered"] = False
+        return True
+    if event == "complained" and contact.get("status") != "stop":
+        contact["status"] = "stop"
+        return True
+    if event == "delivered" and not contact.get("delivered"):
+        contact["delivered"] = True
+        return True
+    return False
+
+
 def build_initial_target(contact: dict, today: str) -> dict:
     return {
         **SEND_DEFAULTS,

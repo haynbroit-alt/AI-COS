@@ -48,6 +48,43 @@ def _http_post_json(url: str, headers: dict, body: bytes) -> dict:
         raise OutreachError(f"Appel Resend échoué : {exc}") from exc
 
 
+def _http_get_json(url: str, headers: dict) -> dict:
+    req = urllib.request.Request(url, headers=headers, method="GET")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as response:
+            return json.loads(response.read().decode())
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode(errors="replace")
+        raise OutreachError(f"Resend HTTP {exc.code} : {detail}") from exc
+    except Exception as exc:  # noqa: BLE001 — urllib lève des types variés
+        raise OutreachError(f"Appel Resend échoué : {exc}") from exc
+
+
+def _auth_headers() -> dict:
+    return {
+        "Authorization": f"Bearer {_key()}",
+        "User-Agent": "velyx-terrain/1.0 (+https://velyx.org)",
+    }
+
+
+def get_last_event(email_id: str) -> str:
+    """Dernier événement Resend d'un envoi (delivered/bounced/complained/…)."""
+    data = _http_get_json(f"{RESEND_URL}/{email_id}", _auth_headers())
+    return data.get("last_event") or ""
+
+
+def list_received(limit: int = 50) -> list[dict]:
+    """Emails entrants (réception activée sur le domaine). Meilleure-effort :
+    renvoie [] si l'endpoint n'est pas disponible sur le compte."""
+    try:
+        data = _http_get_json(f"{RESEND_URL}/received?limit={limit}", _auth_headers())
+    except OutreachError as exc:
+        if "HTTP 404" in str(exc) or "HTTP 405" in str(exc):
+            return []
+        raise
+    return data.get("data") or []
+
+
 def _key() -> str:
     key = os.environ.get("RESEND_API_KEY", "")
     if not key:

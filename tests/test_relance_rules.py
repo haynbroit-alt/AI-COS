@@ -81,6 +81,36 @@ def test_initiaux_excluent_stop():
     assert rules.due_initials(pool, "2026-07-23") == []
 
 
+# --- application des statuts Resend --------------------------------------
+
+def test_bounce_exclut_definitivement():
+    c = _contact()
+    assert rules.apply_last_event(c, "bounced") is True
+    assert c["bounced"] is True and c["delivered"] is False
+    assert rules.due_relances([c], "2026-07-30") == []
+    assert rules.apply_last_event(c, "bounced") is False  # idempotent
+
+
+def test_plainte_devient_stop():
+    c = _contact()
+    assert rules.apply_last_event(c, "complained") is True
+    assert c["status"] == "stop"
+    assert rules.due_relances([c], "2026-07-30") == []
+
+
+def test_delivered_confirme_sans_exclure():
+    c = _contact(delivered=False)
+    assert rules.apply_last_event(c, "delivered") is True
+    assert c["delivered"] is True
+    assert rules.due_relances([c], "2026-07-22") == [c]
+
+
+def test_evenement_inconnu_ignore():
+    c = _contact()
+    assert rules.apply_last_event(c, "opened") is False
+    assert rules.apply_last_event(c, "") is False
+
+
 # --- construction des cibles ---------------------------------------------
 
 def test_cible_relance_complete():
