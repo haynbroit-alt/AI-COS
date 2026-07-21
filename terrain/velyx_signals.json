@@ -1,0 +1,16 @@
+{
+  "genere_le": "2026-07-21",
+  "signaux": [
+    {"societe": "Pennylane", "type": "recrutement_sales", "signal": "Recrute un Team Lead SDR (Paris)", "date": "2026-07", "source": "fr.indeed.com/q-bdr-sdr-emplois.html", "angle": "L'équipe outbound s'industrialise — le temps de rampe des SDR internes est une fenêtre pour du pipeline externalisé immédiat."},
+    {"societe": "EPSA Innovation", "type": "recrutement_sales", "signal": "Recrute un SDR Senior / Téléprospecteur B2B confirmé (Lyon)", "date": "2026-07", "source": "fr.indeed.com/q-bdr-sdr-emplois.html", "angle": "Cherche un profil confirmé introuvable — une prestation externalisée comble le poste vacant dès cette semaine."},
+    {"societe": "Edenred", "type": "recrutement_sales", "signal": "Recrute un Business Developer (Toulouse)", "date": "2026-07", "source": "fr.indeed.com/q-bdr-sdr-emplois.html", "angle": "Expansion commerciale régionale — besoin de listes qualifiées locales pour armer le poste."},
+    {"societe": "TechBiz Global", "type": "recrutement_sales", "signal": "Recrute un SDR — 60% prospection outbound (Paris)", "date": "2026-07", "source": "fr.indeed.com/q-bdr-sdr-emplois.html", "angle": "Fiche de poste explicitement outbound — la génération de leads est une priorité budgétée."},
+    {"societe": "Mendo", "type": "levee_de_fonds", "signal": "Levée de 12 M€ (Enterprise AI)", "date": "2026-06-11", "source": "jaimelesstartups.fr/liste-levee-de-fonds-startup-france/", "angle": "Budget frais + pression de croissance investisseurs — le pipeline doit suivre la levée dans les 2 trimestres."},
+    {"societe": "Finovox", "type": "levee_de_fonds", "signal": "Levée de 8,5 M€ (FinTech)", "date": "2026-06-08", "source": "jaimelesstartups.fr/liste-levee-de-fonds-startup-france/", "angle": "Scale-up fintech post-levée — fenêtre classique d'externalisation de la prospection pendant le staffing."},
+    {"societe": "Beev", "type": "levee_de_fonds", "signal": "Levée de 3 M€ (recharge VE)", "date": "2026-06-17", "source": "jaimelesstartups.fr/liste-levee-de-fonds-startup-france/", "angle": "Marché B2B flottes/immobilier — cibles identifiables, cycle court, besoin de volume commercial."},
+    {"societe": "Eyst", "type": "levee_de_fonds", "signal": "Levée de 1,7 M€ (InsurTech)", "date": "2026-06-10", "source": "jaimelesstartups.fr/liste-levee-de-fonds-startup-france/", "angle": "Amorçage récent — première équipe commerciale en construction, terrain idéal pour une agence."},
+    {"societe": "NotiPark", "type": "levee_de_fonds", "signal": "Levée de 1,7 M€ (automatisation parking)", "date": "2026-06-17", "source": "jaimelesstartups.fr/liste-levee-de-fonds-startup-france/", "angle": "B2B collectivités/foncières — prospection sortante nécessaire, peu de notoriété."},
+    {"societe": "Axion-IA", "type": "levee_de_fonds", "signal": "Levée de 1 M€ (conseil IA)", "date": "2026-07-03", "source": "jaimelesstartups.fr/liste-levee-de-fonds-startup-france/", "angle": "Levée de juillet — le signal le plus frais : budget commercial en cours d'allocation maintenant."},
+    {"societe": "Rivage", "type": "levee_de_fonds", "signal": "Levée de 1,5 M€ (property management)", "date": "2026-07-06", "source": "jaimelesstartups.fr/liste-levee-de-fonds-startup-france/", "angle": "Levée de la semaine dernière — fenêtre d'approche optimale avant que les concurrents ne s'alignent."}
+  ]
+}
