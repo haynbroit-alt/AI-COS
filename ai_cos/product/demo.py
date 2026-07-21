@@ -13,7 +13,7 @@ en gérant l'énergie. Chaque cycle suit les 6 étapes du prototype :
 Mode suggestion : ici l'« utilisateur » accepte chaque suggestion (simulation),
 mais le choix reste structurellement le sien — voir cli.py pour le mode interactif.
 
-Usage : python -m ai_cos.demo
+Usage : python -m ai_cos.product.demo
 """
 
 from __future__ import annotations
