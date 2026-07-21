@@ -44,6 +44,17 @@ structures dont le métier est l'outbound → besoin plausible pour Velyx.
   Nova — formulaire uniquement, aucun email public.
 - LeadActiv — adresse RGPD dédiée uniquement (décision J2 maintenue).
 
+## Extension v2 (2026-07-21 soir) — segment « douleur urgente » (OFFRE.md)
+
+| Société | Email | Segment | Signal | Vérification |
+|---|---|---|---|---|
+| Axion-IA | contact@axion-ia.com | post_levee | Levée 1 M€ le 03/07 **+ recrute un commercial B2B** | axion-ia.com/fr/mentions-legales |
+
+Écartés (invérifiables à la source) : Finovox (pages légales 404), Rivage
+(formulaire uniquement), NotiPark/Eyst/Mendo/Beev (email public non trouvé),
+Pennylane/Edenred/EPSA/TechBiz (grands comptes, formulaires uniquement).
+À réessayer au fil des runs.
+
 ## Déroulé prévisionnel (cap 5/jour, automatique via terrain-daily)
 
 - **2026-07-22** : 4 relances J+2 (lot J2) + 1 envoi initial.
