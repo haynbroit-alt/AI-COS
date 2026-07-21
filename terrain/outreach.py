@@ -80,6 +80,9 @@ class ResendSender:
             "Authorization": f"Bearer {_key()}",
             "Content-Type": "application/json",
             "Idempotency-Key": target["idempotency_key"],
+            # Cloudflare (devant api.resend.com) rejette la signature par
+            # défaut de urllib depuis les runners CI (HTTP 403, code 1010).
+            "User-Agent": "velyx-terrain/1.0 (+https://velyx.org)",
         }
         return self.transport(RESEND_URL, headers, body)
 
