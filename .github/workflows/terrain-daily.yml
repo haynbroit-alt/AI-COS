@@ -37,6 +37,9 @@ jobs:
           STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           LOOP_SKIP_PUSH: "1"   # le commit/push est fait par le step suivant
+          # Campagne active : cabinets recrutement Montpellier/Occitanie.
+          # Vider cette variable pour repasser sur campaign.json (agences).
+          CAMPAIGN_FILE: campaign-montpellier-cabinet.json
         run: |
           set +e
           python terrain/loop.py
