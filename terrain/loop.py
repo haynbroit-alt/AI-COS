@@ -171,7 +171,15 @@ def _load_sibling(name: str):
     return mod
 
 
-CAMPAIGN_PATH = HERE / "campaign.json"
+def _get_campaign_path() -> Path:
+    """Charge le fichier campaign à partir de la variable d'env ou du défaut."""
+    env_path = os.environ.get("CAMPAIGN_FILE")
+    if env_path:
+        path = Path(env_path)
+        if not path.is_absolute():
+            path = HERE / path
+        return path
+    return HERE / "campaign.json"
 
 
 def _send_due(kind: str) -> tuple[bool, str]:
@@ -179,7 +187,8 @@ def _send_due(kind: str) -> tuple[bool, str]:
     par relance_rules depuis campaign.json, puis persiste l'avancement. 0 cible
     due = succès silencieux (la clé Resend n'est exigée que s'il faut envoyer)."""
     rules = _load_sibling("relance_rules")
-    campaign = json.loads(CAMPAIGN_PATH.read_text())
+    campaign_path = _get_campaign_path()
+    campaign = json.loads(campaign_path.read_text())
     contacts = campaign.get("contacts", [])
     today = _today()
     due = rules.due_relances(contacts, today) if kind == "relance" \
@@ -205,7 +214,7 @@ def _send_due(kind: str) -> tuple[bool, str]:
         except outreach.OutreachError as exc:
             errors += 1
             report.append({"email": target["email"], "status": "error", "error": str(exc)})
-    CAMPAIGN_PATH.write_text(json.dumps(campaign, ensure_ascii=False, indent=2) + "\n")
+    campaign_path.write_text(json.dumps(campaign, ensure_ascii=False, indent=2) + "\n")
     return errors == 0, json.dumps(report, ensure_ascii=False)
 
 
@@ -213,7 +222,8 @@ def _check_status() -> tuple[bool, str]:
     """Relevé automatique des statuts Resend : bounces/plaintes → exclusion,
     délivrances confirmées, réponses entrantes (hello@velyx.org) → replied.
     Remplace le relevé manuel — les relances ne partent qu'après ce relevé."""
-    campaign = json.loads(CAMPAIGN_PATH.read_text())
+    campaign_path = _get_campaign_path()
+    campaign = json.loads(campaign_path.read_text())
     contacts = campaign.get("contacts", [])
     to_check = [c for c in contacts
                 if c.get("resend_id") and not c.get("bounced") and not c.get("replied")]
@@ -243,7 +253,7 @@ def _check_status() -> tuple[bool, str]:
             if c["email"].lower() in sender and not c.get("replied"):
                 c["replied"] = True
                 changes.append(f"{c['email']}→replied")
-    CAMPAIGN_PATH.write_text(json.dumps(campaign, ensure_ascii=False, indent=2) + "\n")
+    campaign_path.write_text(json.dumps(campaign, ensure_ascii=False, indent=2) + "\n")
     detail = "; ".join(changes) or "aucun changement"
     if errors:
         detail += " | erreurs: " + "; ".join(errors)
@@ -302,8 +312,9 @@ def _main(argv: list[str]) -> int:
     parser.parse_args(argv)
 
     plan, steps = _real_plan_and_steps()
-    contacts = json.loads(CAMPAIGN_PATH.read_text()).get("contacts", []) \
-        if CAMPAIGN_PATH.exists() else []
+    campaign_path = _get_campaign_path()
+    contacts = json.loads(campaign_path.read_text()).get("contacts", []) \
+        if campaign_path.exists() else []
     rules = _load_sibling("relance_rules")
     send_work_due = bool(
         rules.due_relances(contacts, _today()) or rules.due_initials(contacts, _today())
