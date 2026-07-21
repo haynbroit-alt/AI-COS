@@ -77,10 +77,10 @@ def list_received(limit: int = 50) -> list[dict]:
     """Emails entrants (réception activée sur le domaine). Meilleure-effort :
     renvoie [] si l'endpoint n'est pas disponible sur le compte."""
     try:
-        data = _http_get_json(f"{RESEND_URL}/received?limit={limit}", _auth_headers())
+        data = _http_get_json(f"{RESEND_URL}/receiving?limit={limit}", _auth_headers())
     except OutreachError as exc:
-        if "HTTP 404" in str(exc) or "HTTP 405" in str(exc):
-            return []
+        if any(f"HTTP {code}" in str(exc) for code in (404, 405, 422)):
+            return []  # réception non disponible sur le compte
         raise
     return data.get("data") or []
 
