@@ -4,13 +4,13 @@
     "read_cycle": "done",
     "relance": "done",
     "outreach_initial": "done",
-    "check_status": "failed"
+    "check_status": "done"
   },
   "fail_counts": {
     "read_cycle": 0,
     "push": 0,
     "relance": 0,
     "outreach_initial": 0,
-    "check_status": 1
+    "check_status": 0
   }
 }
