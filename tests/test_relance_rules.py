@@ -125,14 +125,31 @@ def test_cible_relance_complete():
     assert "List-Unsubscribe" in tgt["headers"]
 
 
-def test_cible_initiale_complete():
+def test_cible_initiale_appat_preuve_gratuite():
     c = _contact(company="Nova Leads", email="contact@novaleads.fr",
                  sent=False, sent_date=None,
                  subject="Des comptes déjà en recherche active",
                  hook="livrer à vos SDR des comptes déjà en recherche")
     tgt = rules.build_initial_target(c, "2026-07-23")
     assert tgt["subject"] == "Des comptes déjà en recherche active"
-    assert "Nova Leads" in tgt["text"]
+    assert "10 opportunités" in tgt["text"]          # l'appât : preuve gratuite
+    assert "radar commercial" in tgt["text"]          # le positionnement
     assert "livrer à vos SDR" in tgt["text"]
     assert "répondez « stop »" in tgt["text"]
     assert tgt["idempotency_key"] == "velyx-initial-novaleads-20260723"
+
+
+def test_templates_par_moment_de_douleur():
+    sdr = _contact(company="Scaleup", email="c@s.fr", sent=False, sent_date=None,
+                   template="recrute_sdr", subject="s",
+                   hook="alimenter l'équipe pendant le recrutement")
+    txt = rules.build_initial_target(sdr, "2026-07-23")["text"]
+    assert "recrute actuellement côté commercial" in txt
+    assert "10 opportunités" in txt
+
+    levee = _contact(company="Fintech", email="c@f.fr", sent=False, sent_date=None,
+                     template="post_levee", subject="s",
+                     hook="transformer votre levée en pipeline")
+    txt = rules.build_initial_target(levee, "2026-07-23")["text"]
+    assert "boucler une levée" in txt
+    assert "croissance commerciale" in txt

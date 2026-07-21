@@ -35,16 +35,39 @@ RELANCE_TEXT = (
     "Pour ne plus recevoir de message : répondez « stop »."
 )
 
-INITIAL_TEXT = (
-    "Bonjour,\n\n"
-    "Velyx détecte les entreprises qui expriment déjà un signal d'achat — "
-    "avant qu'elles n'apparaissent dans le radar de vos concurrents. Pour une "
-    "structure comme {company}, cela veut dire {hook}.\n\n"
-    "Si c'est pertinent, 15 minutes suffisent à vous le montrer sur vos "
-    "propres cibles.\n\n"
+_PREUVE = (
+    "Pour vous le prouver plutôt que le raconter : je vous envoie gratuitement "
+    "10 opportunités détectées sur votre marché (signal daté, source, angle "
+    "d'approche), sans condition.\n\n"
+    "Si {hook} vous parle : un simple « oui » suffit.\n\n"
     "Charfa — Velyx\n\n"
     "Pour ne plus recevoir de message : répondez « stop »."
 )
+
+# L'appât = preuve gratuite de valeur, par moment de douleur (terrain/OFFRE.md).
+INITIAL_TEXTS = {
+    "agence": (
+        "Bonjour,\n\n"
+        "Velyx est un radar commercial : nous trouvons les entreprises qui ont "
+        "une raison d'acheter maintenant — pas des listes, des comptes avec une "
+        "raison datée.\n\n" + _PREUVE
+    ),
+    "recrute_sdr": (
+        "Bonjour,\n\n"
+        "{company} recrute actuellement côté commercial — pendant que le "
+        "recrutement suit son cours, le pipeline attend.\n\n"
+        "Velyx est un radar commercial : nous trouvons les entreprises qui ont "
+        "une raison d'acheter maintenant.\n\n" + _PREUVE
+    ),
+    "post_levee": (
+        "Bonjour,\n\n"
+        "{company} vient de boucler une levée — félicitations. Le défi qui "
+        "suit est connu : transformer ce budget en croissance commerciale.\n\n"
+        "Velyx est un radar commercial : nous trouvons les entreprises qui ont "
+        "une raison d'acheter maintenant.\n\n" + _PREUVE
+    ),
+}
+INITIAL_TEXT = INITIAL_TEXTS["agence"]  # défaut historique
 
 
 def _slug(company: str) -> str:
@@ -120,10 +143,11 @@ def apply_last_event(contact: dict, event: str) -> bool:
 
 
 def build_initial_target(contact: dict, today: str) -> dict:
+    template = INITIAL_TEXTS[contact.get("template", "agence")]
     return {
         **SEND_DEFAULTS,
         "email": contact["email"],
         "subject": contact["subject"],
-        "text": INITIAL_TEXT.format(company=contact["company"], hook=contact["hook"]),
+        "text": template.format(company=contact["company"], hook=contact["hook"]),
         "idempotency_key": f"velyx-initial-{_slug(contact['company'])}-{today.replace('-', '')}",
     }

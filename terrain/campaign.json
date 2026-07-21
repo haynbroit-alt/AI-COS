@@ -284,6 +284,22 @@
       "relances": []
     },
     {
+      "company": "Axion-IA",
+      "email": "contact@axion-ia.com",
+      "sent": false,
+      "sent_date": null,
+      "delivered": false,
+      "bounced": false,
+      "replied": false,
+      "meeting": false,
+      "signed": false,
+      "revenue_eur": 0,
+      "template": "post_levee",
+      "subject": "Transformer votre levée de juillet en pipeline",
+      "hook": "transformer votre levée en pipeline dès ce trimestre",
+      "relances": []
+    },
+    {
       "company": "Messor",
       "email": "hello@messor.fr",
       "sent": false,
