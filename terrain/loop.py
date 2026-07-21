@@ -198,14 +198,56 @@ def _send_due(kind: str) -> tuple[bool, str]:
             res = sender.send(target)
             if kind == "relance":
                 contact.setdefault("relances", []).append(today)
+                contact["relance_resend_id"] = res.get("id")
             else:
-                contact.update(sent=True, sent_date=today, delivered=True)
+                contact.update(sent=True, sent_date=today, resend_id=res.get("id"))
             report.append({"email": target["email"], "status": "sent", "id": res.get("id")})
         except outreach.OutreachError as exc:
             errors += 1
             report.append({"email": target["email"], "status": "error", "error": str(exc)})
     CAMPAIGN_PATH.write_text(json.dumps(campaign, ensure_ascii=False, indent=2) + "\n")
     return errors == 0, json.dumps(report, ensure_ascii=False)
+
+
+def _check_status() -> tuple[bool, str]:
+    """Relevé automatique des statuts Resend : bounces/plaintes → exclusion,
+    délivrances confirmées, réponses entrantes (hello@velyx.org) → replied.
+    Remplace le relevé manuel — les relances ne partent qu'après ce relevé."""
+    campaign = json.loads(CAMPAIGN_PATH.read_text())
+    contacts = campaign.get("contacts", [])
+    to_check = [c for c in contacts
+                if c.get("resend_id") and not c.get("bounced") and not c.get("replied")]
+    if not to_check:
+        return True, "0 statut à relever"
+    if not os.environ.get("RESEND_API_KEY"):
+        return False, "RESEND_API_KEY absent"
+    outreach = _load_sibling("outreach")
+    rules = _load_sibling("relance_rules")
+    changes, errors = [], []
+    for c in to_check:
+        try:
+            event = outreach.get_last_event(c["resend_id"])
+        except outreach.OutreachError as exc:
+            errors.append(f"{c['email']}: {exc}")
+            continue
+        if rules.apply_last_event(c, event):
+            changes.append(f"{c['email']}→{event}")
+    try:
+        inbound = outreach.list_received()
+    except outreach.OutreachError as exc:
+        inbound = []
+        errors.append(f"inbound: {exc}")
+    for msg in inbound:
+        sender = str(msg.get("from") or "").lower()
+        for c in contacts:
+            if c["email"].lower() in sender and not c.get("replied"):
+                c["replied"] = True
+                changes.append(f"{c['email']}→replied")
+    CAMPAIGN_PATH.write_text(json.dumps(campaign, ensure_ascii=False, indent=2) + "\n")
+    detail = "; ".join(changes) or "aucun changement"
+    if errors:
+        detail += " | erreurs: " + "; ".join(errors)
+    return not errors, detail
 
 
 def _real_plan_and_steps():
@@ -238,11 +280,12 @@ def _real_plan_and_steps():
 
     steps = {
         "read_cycle": read_cycle,
+        "check_status": _check_status,
         "relance": lambda: _send_due("relance"),
         "outreach_initial": lambda: _send_due("initial"),
         "push": push,
     }
-    plan = ["read_cycle", "relance", "outreach_initial"]
+    plan = ["read_cycle", "check_status", "relance", "outreach_initial"]
     # En CI (GitHub Actions), le workflow gère le commit/push : LOOP_SKIP_PUSH=1.
     if not os.environ.get("LOOP_SKIP_PUSH"):
         plan.append("push")
