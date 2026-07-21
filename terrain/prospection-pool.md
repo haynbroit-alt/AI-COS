@@ -55,6 +55,23 @@ structures dont le métier est l'outbound → besoin plausible pour Velyx.
 Pennylane/Edenred/EPSA/TechBiz (grands comptes, formulaires uniquement).
 À réessayer au fil des runs.
 
+## Extension v3 (2026-07-21 soir) — segment post-levée, sourcing web sans Apollo
+
+| Société | Email | Levée | Vérification |
+|---|---|---|---|
+| Naaia | contact@naaia.ai | 6 M€ — 10/07 | naaia.ai/mentions-legales |
+| Flease | contact@flease.fr | 13 M€ — 03/07 | flease.fr (footer) |
+| Sopht | contact@sopht.com | 7,5 M€ — 30/06 | sopht.com/contact |
+| Linc | contact@linc.fr | 8,5 M€ — 23/06 | linc.fr/mentions-legales |
+| Mister IA | contact@mister-ia.com | 10 M€ — 21/05 | mister-ia.com/mentions-legales |
+| Sharvy | info@sharvy.com | 1,2 M€ — 06/05 | sharvy.com/mentions-legales |
+| Vizzia | contact@vizzia.fr | 30 M€ — 2026 | vizzia.com/en/contact |
+
+Écartés v3 : Naboo, Mendo, Callendar, Finovox, NotiPark, Beev, Eyst,
+Mobioos, Tsuga, Dust, Green-Got (B2C), Udora (Dubaï), Audion — email
+générique invérifiable à la source ou hors ICP. ~35 candidats criblés,
+taux de vérification ≈ 25 % (formulaires partout).
+
 ## Déroulé prévisionnel (cap 5/jour, automatique via terrain-daily)
 
 - **2026-07-22** : 4 relances J+2 (lot J2) + 1 envoi initial.

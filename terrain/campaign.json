@@ -284,6 +284,69 @@
       "relances": []
     },
     {
+      "company": "Naaia",
+      "email": "contact@naaia.ai",
+      "sent": false, "sent_date": null, "delivered": false, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0,
+      "template": "post_levee",
+      "subject": "Après la levée : transformer le budget en pipeline",
+      "hook": "transformer votre levée de juillet en pipeline dès ce trimestre",
+      "relances": []
+    },
+    {
+      "company": "Sopht",
+      "email": "contact@sopht.com",
+      "sent": false, "sent_date": null, "delivered": false, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0,
+      "template": "post_levee",
+      "subject": "Convertir votre levée en croissance commerciale",
+      "hook": "identifier les DSI déjà en recherche de GreenOps",
+      "relances": []
+    },
+    {
+      "company": "Linc",
+      "email": "contact@linc.fr",
+      "sent": false, "sent_date": null, "delivered": false, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0,
+      "template": "post_levee",
+      "subject": "Des cabinets déjà prêts à changer d'outil de paie",
+      "hook": "détecter les cabinets prêts à quitter leur logiciel de paie actuel",
+      "relances": []
+    },
+    {
+      "company": "Flease",
+      "email": "contact@flease.fr",
+      "sent": false, "sent_date": null, "delivered": false, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0,
+      "template": "post_levee",
+      "subject": "Des PME déjà en recherche de flotte",
+      "hook": "repérer les PME qui renouvellent leur flotte maintenant",
+      "relances": []
+    },
+    {
+      "company": "Mister IA",
+      "email": "contact@mister-ia.com",
+      "sent": false, "sent_date": null, "delivered": false, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0,
+      "template": "post_levee",
+      "subject": "Des entreprises déjà en recherche d'un partenaire IA",
+      "hook": "capter les entreprises qui cherchent un partenaire IA cette semaine",
+      "relances": []
+    },
+    {
+      "company": "Sharvy",
+      "email": "info@sharvy.com",
+      "sent": false, "sent_date": null, "delivered": false, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0,
+      "template": "post_levee",
+      "subject": "Des entreprises qui repensent leurs bureaux maintenant",
+      "hook": "détecter les entreprises qui passent au flex office",
+      "relances": []
+    },
+    {
+      "company": "Vizzia",
+      "email": "contact@vizzia.fr",
+      "sent": false, "sent_date": null, "delivered": false, "bounced": false, "replied": false, "meeting": false, "signed": false, "revenue_eur": 0,
+      "template": "post_levee",
+      "subject": "Des collectivités déjà en recherche de solutions propreté",
+      "hook": "repérer les collectivités qui budgètent la propreté urbaine",
+      "relances": []
+    },
+    {
       "company": "Axion-IA",
       "email": "contact@axion-ia.com",
       "sent": false,
