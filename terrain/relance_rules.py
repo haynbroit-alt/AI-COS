@@ -66,6 +66,22 @@ INITIAL_TEXTS = {
         "Velyx est un radar commercial : nous trouvons les entreprises qui ont "
         "une raison d'acheter maintenant.\n\n" + _PREUVE
     ),
+    "cabinet": (
+        "Bonjour,\n\n"
+        "Votre matière première, ce sont les entreprises qui recrutent. Velyx "
+        "est un radar de signaux faibles : nous détectons celles qui montrent "
+        "des signaux de recrutement tech — offres multiples, croissance, levée, "
+        "nouveau CTO — avant qu'elles ne lancent officiellement une recherche "
+        "cabinet.\n\n"
+        "Pour vous le prouver plutôt que le raconter : je vous envoie "
+        "gratuitement 10 opportunités recrutement tech détectées sur "
+        "Montpellier et l'Occitanie (signal daté, décideur, angle d'approche), "
+        "sans condition. Si l'une d'elles génère un rendez-vous, on parle d'un "
+        "modèle au résultat — sinon aucun engagement.\n\n"
+        "Si {hook} vous parle : un simple « oui » suffit.\n\n"
+        "Charfa — Velyx\n\n"
+        "Pour ne plus recevoir de message : répondez « stop »."
+    ),
 }
 INITIAL_TEXT = INITIAL_TEXTS["agence"]  # défaut historique
 
