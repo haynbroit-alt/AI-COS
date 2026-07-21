@@ -161,7 +161,54 @@ def run(cfg: LoopConfig) -> dict:
 # Câblage réel (hors chemin testé) : Stripe/Resend/git via subprocess & stdlib.
 # --------------------------------------------------------------------------
 
-def _real_plan_and_steps(relance: bool):
+def _load_sibling(name: str):
+    """Charge un module voisin de terrain/ (répertoire non-paquet)."""
+    import importlib.util, sys as _sys
+    spec = importlib.util.spec_from_file_location(name, HERE / f"{name}.py")
+    mod = importlib.util.module_from_spec(spec)
+    _sys.modules[name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+CAMPAIGN_PATH = HERE / "campaign.json"
+
+
+def _send_due(kind: str) -> tuple[bool, str]:
+    """Envoie les cibles dues du jour (kind = 'relance' | 'initial'), calculées
+    par relance_rules depuis campaign.json, puis persiste l'avancement. 0 cible
+    due = succès silencieux (la clé Resend n'est exigée que s'il faut envoyer)."""
+    rules = _load_sibling("relance_rules")
+    campaign = json.loads(CAMPAIGN_PATH.read_text())
+    contacts = campaign.get("contacts", [])
+    today = _today()
+    due = rules.due_relances(contacts, today) if kind == "relance" \
+        else rules.due_initials(contacts, today)
+    if not due:
+        return True, f"0 {kind} due"
+    if not os.environ.get("RESEND_API_KEY"):
+        return False, "RESEND_API_KEY absent"
+    outreach = _load_sibling("outreach")
+    sender = outreach.ResendSender()
+    report, errors = [], 0
+    for contact in due:
+        target = rules.build_relance_target(contact, today) if kind == "relance" \
+            else rules.build_initial_target(contact, today)
+        try:
+            res = sender.send(target)
+            if kind == "relance":
+                contact.setdefault("relances", []).append(today)
+            else:
+                contact.update(sent=True, sent_date=today, delivered=True)
+            report.append({"email": target["email"], "status": "sent", "id": res.get("id")})
+        except outreach.OutreachError as exc:
+            errors += 1
+            report.append({"email": target["email"], "status": "error", "error": str(exc)})
+    CAMPAIGN_PATH.write_text(json.dumps(campaign, ensure_ascii=False, indent=2) + "\n")
+    return errors == 0, json.dumps(report, ensure_ascii=False)
+
+
+def _real_plan_and_steps():
     import subprocess
 
     def read_cycle() -> tuple[bool, str]:
@@ -173,35 +220,29 @@ def _real_plan_and_steps(relance: bool):
         )
         return proc.returncode == 0, (proc.stdout or proc.stderr)[-500:]
 
-    def do_relance() -> tuple[bool, str]:
-        if not os.environ.get("RESEND_API_KEY"):
-            return False, "RESEND_API_KEY absent"
-        import importlib.util, sys as _sys
-        spec = importlib.util.spec_from_file_location("outreach", HERE / "outreach.py")
-        mod = importlib.util.module_from_spec(spec)
-        _sys.modules["outreach"] = mod
-        spec.loader.exec_module(mod)
-        rep = mod.relance(HERE / "relance_targets.json")
-        errors = [r for r in rep if r["status"] == "error"]
-        return (not errors), json.dumps(rep, ensure_ascii=False)
-
     def push() -> tuple[bool, str]:
         import subprocess
+        branch = os.environ.get("TERRAIN_BRANCH") or subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            capture_output=True, text=True, cwd=HERE.parent,
+        ).stdout.strip() or "main"
         subprocess.run(["git", "add", "terrain/"], cwd=HERE.parent)
         subprocess.run(
             ["git", "commit", "-q", "-m", f"terrain: run auto {_today()}"], cwd=HERE.parent
         )
         proc = subprocess.run(
-            ["git", "push", "-u", "origin", "claude/system-architect-rules-9zz9v1"],
+            ["git", "push", "-u", "origin", branch],
             capture_output=True, text=True, cwd=HERE.parent,
         )
         return proc.returncode == 0, (proc.stdout or proc.stderr)[-300:]
 
-    steps = {"read_cycle": read_cycle, "push": push}
-    plan = ["read_cycle"]
-    if relance:
-        steps["relance"] = do_relance
-        plan.append("relance")
+    steps = {
+        "read_cycle": read_cycle,
+        "relance": lambda: _send_due("relance"),
+        "outreach_initial": lambda: _send_due("initial"),
+        "push": push,
+    }
+    plan = ["read_cycle", "relance", "outreach_initial"]
     # En CI (GitHub Actions), le workflow gère le commit/push : LOOP_SKIP_PUSH=1.
     if not os.environ.get("LOOP_SKIP_PUSH"):
         plan.append("push")
@@ -213,14 +254,19 @@ def _main(argv: list[str]) -> int:
     from metrics import report as metrics_report  # type: ignore
 
     parser = argparse.ArgumentParser(description="Boucle terrain autonome.")
-    parser.add_argument("--relance", action="store_true")
-    args = parser.parse_args(argv)
+    parser.add_argument("--relance", action="store_true",
+                        help="(déprécié — la relance J+2 est désormais automatique)")
+    parser.parse_args(argv)
 
-    plan, steps = _real_plan_and_steps(args.relance)
-    missing = [s for s in (["STRIPE_API_KEY"] + (["RESEND_API_KEY"] if args.relance else []))
+    plan, steps = _real_plan_and_steps()
+    contacts = json.loads(CAMPAIGN_PATH.read_text()).get("contacts", []) \
+        if CAMPAIGN_PATH.exists() else []
+    rules = _load_sibling("relance_rules")
+    send_work_due = bool(
+        rules.due_relances(contacts, _today()) or rules.due_initials(contacts, _today())
+    )
+    missing = [s for s in (["STRIPE_API_KEY"] + (["RESEND_API_KEY"] if send_work_due else []))
                if not os.environ.get(s)]
-    contacts = json.loads((HERE / "campaign.json").read_text()).get("contacts", []) \
-        if (HERE / "campaign.json").exists() else []
 
     cfg = LoopConfig(steps=steps, plan=plan, contacts=contacts, missing_secrets=missing)
     rep = run(cfg)
