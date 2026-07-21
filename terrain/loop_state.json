@@ -3,12 +3,12 @@
   "steps": {
     "read_cycle": "done",
     "relance": "done",
-    "outreach_initial": "failed"
+    "outreach_initial": "done"
   },
   "fail_counts": {
     "read_cycle": 0,
     "push": 0,
     "relance": 0,
-    "outreach_initial": 1
+    "outreach_initial": 0
   }
 }
