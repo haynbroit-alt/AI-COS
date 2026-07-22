@@ -1,0 +1,63 @@
+name: terrain-inbound
+
+# Auto-répondeur : livre le rapport dès qu'un prospect répond « oui » sur
+# hello@velyx.org — au pic d'intérêt, pas le lendemain. Isolé du cron quotidien
+# (terrain-daily) : ne fait QUE lire la réception Resend et répondre/opter-out.
+# Latence réelle = intervalle du cron + délai de planification GitHub.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # toutes les 15 min
+  workflow_dispatch: {}       # déclenchement manuel
+
+permissions:
+  contents: write             # pour committer inbound_state.json
+
+concurrency:
+  group: terrain-inbound      # jamais deux exécutions en parallèle
+  cancel-in-progress: false
+
+jobs:
+  autorespond:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Auto-répondeur (rapport auto sur « oui », opt-out sur « stop »)
+        id: auto
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          set +e
+          python terrain/autoresponder.py
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Commit état réception
+        run: |
+          git config user.name  "velyx-terrain-bot"
+          git config user.email "velyx-terrain-bot@users.noreply.github.com"
+          git add terrain/inbound_state.json terrain/campaign*.json
+          if git diff --cached --quiet; then
+            echo "Rien à committer."
+          else
+            git commit -m "terrain: réception auto $(date -u +%FT%TZ) [skip ci]"
+            git pull --rebase origin main || true
+            git push origin HEAD:main
+          fi
+
+      - name: Alerte suivi humain requis
+        run: |
+          if [ "${{ steps.auto.outputs.code }}" = "3" ]; then
+            echo "::error::Réponse prospect traitée — suivi humain requis (RDV à caler ou message à lire)."
+            exit 1
+          fi
+          echo "OK — rien à traiter côté humain."

@@ -75,7 +75,10 @@ def get_last_event(email_id: str) -> str:
 
 def list_received(limit: int = 50) -> list[dict]:
     """Emails entrants (réception activée sur le domaine). Meilleure-effort :
-    renvoie [] si l'endpoint n'est pas disponible sur le compte."""
+    renvoie [] si l'endpoint n'est pas disponible sur le compte.
+
+    Note : l'endpoint liste ne renvoie que des métadonnées (from/subject/
+    message_id/id) — pas le corps. Utiliser get_received(id) pour text/html."""
     try:
         data = _http_get_json(f"{RESEND_URL}/receiving?limit={limit}", _auth_headers())
     except OutreachError as exc:
@@ -83,6 +86,11 @@ def list_received(limit: int = 50) -> list[dict]:
             return []  # réception non disponible sur le compte
         raise
     return data.get("data") or []
+
+
+def get_received(email_id: str) -> dict:
+    """Contenu complet d'un email entrant (text/html/headers) par son id Resend."""
+    return _http_get_json(f"{RESEND_URL}/receiving/{email_id}", _auth_headers())
 
 
 def _key() -> str:
