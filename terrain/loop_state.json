@@ -1,10 +1,10 @@
 {
-  "date": "2026-07-21",
+  "date": "2026-07-22",
   "steps": {
     "read_cycle": "done",
+    "check_status": "done",
     "relance": "done",
-    "outreach_initial": "done",
-    "check_status": "done"
+    "outreach_initial": "done"
   },
   "fail_counts": {
     "read_cycle": 0,
