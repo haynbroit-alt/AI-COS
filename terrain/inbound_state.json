@@ -1,0 +1,25 @@
+{
+  "handled": [
+    "<CAGr6jq3kh-bxi8dNJXeuug=ah-GdW=Jt-qFZbpaABYQjy_kfrQ@mail.gmail.com>",
+    "<CAGr6jq3z0F3DU94SE4Lky2o7Zuy8XZy-hKa=E79Ft7UGBmh2Aw@mail.gmail.com>"
+  ],
+  "report_sent": [
+    "lhssncharfa@gmail.com",
+    "lhssncharfa@gmail.com"
+  ],
+  "opt_out": [],
+  "log": [
+    {
+      "message_id": "<CAGr6jq3kh-bxi8dNJXeuug=ah-GdW=Jt-qFZbpaABYQjy_kfrQ@mail.gmail.com>",
+      "sender": "lhssncharfa@gmail.com",
+      "action": "report",
+      "sent_ok": true
+    },
+    {
+      "message_id": "<CAGr6jq3z0F3DU94SE4Lky2o7Zuy8XZy-hKa=E79Ft7UGBmh2Aw@mail.gmail.com>",
+      "sender": "lhssncharfa@gmail.com",
+      "action": "report",
+      "sent_ok": true
+    }
+  ]
+}
