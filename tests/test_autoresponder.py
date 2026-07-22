@@ -81,6 +81,17 @@ def test_plan_ne_renvoie_pas_deux_fois_le_rapport():
     assert acts[0]["action"] == "skip"
 
 
+def test_plan_dedup_intra_run_meme_expediteur():
+    # Deux « oui » du MÊME expéditeur dans un seul run → 1 rapport, 1 skip
+    # (régression : sans dédup intra-run, les deux partaient).
+    msgs = [
+        _msg(message_id="<m1@x>", subject="Oui — 10 opportunités"),
+        _msg(message_id="<m2@x>", subject="Oui encore"),
+    ]
+    acts = autoresponder.plan_actions(msgs, {})
+    assert [a["action"] for a in acts] == ["report", "skip"]
+
+
 def test_plan_stop_puis_human():
     msgs = [
         _msg(message_id="<a@x>", from_=None, subject="stop"),

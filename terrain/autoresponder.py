@@ -146,6 +146,7 @@ def plan_actions(received: list[dict], state: dict) -> list[dict]:
     handled = set(state.get("handled", []))
     reported = set(state.get("report_sent", []))
     opted_out = set(state.get("opt_out", []))
+    planned_reports: set[str] = set()  # dédup INTRA-run : 1 rapport max/expéditeur
     actions: list[dict] = []
     for msg in received:
         mid = _msg_id(msg)
@@ -160,9 +161,11 @@ def plan_actions(received: list[dict], state: dict) -> list[dict]:
         if kind == "stop":
             actions.append({**base, "action": "stop"})
         elif kind == "positive":
-            if sender in reported or sender in opted_out:
+            # Déjà servi (run précédent), opt-out, ou déjà planifié dans CE run.
+            if sender in reported or sender in opted_out or sender in planned_reports:
                 actions.append({**base, "action": "skip"})
             else:
+                planned_reports.add(sender)
                 actions.append({**base, "action": "report"})
         else:
             actions.append({**base, "action": "human"})
@@ -197,7 +200,9 @@ def apply_result(state: dict, action: dict, sent_ok: bool) -> None:
     mid, sender, kind = action["message_id"], action["sender"], action["action"]
     handled = state.setdefault("handled", [])
     if kind == "report" and sent_ok:
-        state.setdefault("report_sent", []).append(sender)
+        reported = state.setdefault("report_sent", [])
+        if sender not in reported:
+            reported.append(sender)
     if kind == "stop":
         oo = state.setdefault("opt_out", [])
         if sender not in oo:
