@@ -1,8 +1,8 @@
 {
   "weights": {
-    "clients": 1.92746875,
-    "revenus": 1.92746875,
-    "qualite": 1.2318671875
+    "clients": 2.1310953125,
+    "revenus": 2.1310953125,
+    "qualite": 1.282773828125
   },
   "observed_effects": {
     "offre premium": {
@@ -47,6 +47,13 @@
       "gap_before": 6544.333955188355,
       "gap_after": 6544.333955188355,
       "cycle": 4
+    },
+    {
+      "action": "prospection ciblée",
+      "context": "dimension « clients » à 100% sous l'objectif",
+      "gap_before": 6941.680098051169,
+      "gap_after": 6941.680098051169,
+      "cycle": 5
     }
   ],
   "knowledge": {
@@ -65,16 +72,16 @@
     },
     "prospection ciblée": {
       "action": "prospection ciblée",
-      "trials": 2,
+      "trials": 3,
       "successes": 0,
       "total_gap_reduction": 0.0,
       "contexts": {
-        "dimension « clients » à 100% sous l'objectif": 2
+        "dimension « clients » à 100% sous l'objectif": 3
       },
       "failure_contexts": {
-        "dimension « clients » à 100% sous l'objectif": 2
+        "dimension « clients » à 100% sous l'objectif": 3
       },
-      "last_cycle": 4
+      "last_cycle": 5
     },
     "amélioration produit": {
       "action": "amélioration produit",
