@@ -91,10 +91,12 @@ def _slug(company: str) -> str:
 
 
 def _excluded(contact: dict) -> bool:
+    # « paused » = cible gelée (adresse non vérifiée, réputation à protéger).
+    # Réversible : retirer le statut la remet dans la file d'envoi.
     return bool(
         contact.get("bounced")
         or contact.get("replied")
-        or contact.get("status") == "stop"
+        or contact.get("status") in ("stop", "paused")
     )
 
 

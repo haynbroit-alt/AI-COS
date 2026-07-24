@@ -227,7 +227,8 @@
       "hook": "Les entreprises d'Occitanie qui vont recruter — détectées avant",
       "relances": [],
       "resend_id": null,
-      "notes": "WARM pool"
+      "notes": "WARM pool",
+      "status": "paused"
     },
     {
       "company": "Le Carré RH",
@@ -246,7 +247,8 @@
       "hook": "Les entreprises d'Occitanie qui vont recruter — détectées avant",
       "relances": [],
       "resend_id": null,
-      "notes": "WARM pool"
+      "notes": "WARM pool",
+      "status": "paused"
     },
     {
       "company": "Opt'in",
@@ -265,7 +267,8 @@
       "hook": "Les entreprises d'Occitanie qui vont recruter — détectées avant",
       "relances": [],
       "resend_id": null,
-      "notes": "WARM pool"
+      "notes": "WARM pool",
+      "status": "paused"
     },
     {
       "company": "Potentiel Humain",
@@ -284,7 +287,8 @@
       "hook": "Les entreprises d'Occitanie qui vont recruter — détectées avant",
       "relances": [],
       "resend_id": null,
-      "notes": "WARM pool"
+      "notes": "WARM pool",
+      "status": "paused"
     },
     {
       "company": "Strattitude",
@@ -303,7 +307,8 @@
       "hook": "Les entreprises d'Occitanie qui vont recruter — détectées avant",
       "relances": [],
       "resend_id": null,
-      "notes": "WARM pool"
+      "notes": "WARM pool",
+      "status": "paused"
     },
     {
       "company": "TAC",
@@ -322,7 +327,8 @@
       "hook": "Les entreprises d'Occitanie qui vont recruter — détectées avant",
       "relances": [],
       "resend_id": null,
-      "notes": "WARM pool"
+      "notes": "WARM pool",
+      "status": "paused"
     },
     {
       "company": "FASEYA",
@@ -341,7 +347,8 @@
       "hook": "anticiper les besoins tech de vos futurs clients",
       "relances": [],
       "resend_id": null,
-      "notes": "ESN — cycle plus long, angle adapté, file en dernier"
+      "notes": "ESN — cycle plus long, angle adapté, file en dernier",
+      "status": "paused"
     },
     {
       "company": "Meritis",
@@ -360,7 +367,8 @@
       "hook": "anticiper les besoins tech de vos futurs clients",
       "relances": [],
       "resend_id": null,
-      "notes": "ESN"
+      "notes": "ESN",
+      "status": "paused"
     },
     {
       "company": "Alteca",
@@ -379,7 +387,8 @@
       "hook": "anticiper les besoins tech de vos futurs clients",
       "relances": [],
       "resend_id": null,
-      "notes": "ESN"
+      "notes": "ESN",
+      "status": "paused"
     },
     {
       "company": "Scalian",
@@ -398,7 +407,8 @@
       "hook": "anticiper les besoins tech de vos futurs clients",
       "relances": [],
       "resend_id": null,
-      "notes": "ESN"
+      "notes": "ESN",
+      "status": "paused"
     },
     {
       "company": "Viveris",
@@ -417,7 +427,8 @@
       "hook": "anticiper les besoins tech de vos futurs clients",
       "relances": [],
       "resend_id": null,
-      "notes": "ESN"
+      "notes": "ESN",
+      "status": "paused"
     }
   ]
 }
