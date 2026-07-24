@@ -20,9 +20,12 @@
       "template": "cabinet",
       "subject": "Des entreprises qui recrutent avant qu'elles n'appellent un cabinet",
       "hook": "alimenter vos 300 recrutements/an en mandats détectés en amont",
-      "relances": [],
+      "relances": [
+        "2026-07-24"
+      ],
       "resend_id": "7f8962c2-c0d0-4f15-a90c-9b98147371a0",
-      "notes": "300+ recrutements/an IT — volume justifie flux permanent"
+      "notes": "300+ recrutements/an IT — volume justifie flux permanent",
+      "relance_resend_id": "e5dd96ec-f1f3-4d3f-88e5-fbb7f6c4c4ed"
     },
     {
       "company": "Seyos",
@@ -39,9 +42,12 @@
       "template": "cabinet",
       "subject": "Vos prochains mandats tech, détectés avant l'appel d'offres",
       "hook": "détecter les prochains mandats avant vos concurrents",
-      "relances": [],
+      "relances": [
+        "2026-07-24"
+      ],
       "resend_id": "bb14b243-aded-4525-b7d5-da6e285aae04",
-      "notes": "900 clients, 2700 recrutements — détection avant appel d'offres touche vraie concurrence"
+      "notes": "900 clients, 2700 recrutements — détection avant appel d'offres touche vraie concurrence",
+      "relance_resend_id": "f8adfde9-1934-4361-bcd1-c2d74c926691"
     },
     {
       "company": "Bureau des Talents",
@@ -58,9 +64,12 @@
       "template": "cabinet",
       "subject": "Les startups qui vont recruter des profils rares — détectées avant",
       "hook": "repérer les startups qui cherchent des profils rares avant saturation du marché",
-      "relances": [],
+      "relances": [
+        "2026-07-24"
+      ],
       "resend_id": "ace42183-e599-43bb-815d-015b84900c10",
-      "notes": "Tech/startups + profils rares = timing vaut le plus cher"
+      "notes": "Tech/startups + profils rares = timing vaut le plus cher",
+      "relance_resend_id": "9f4ccdeb-a2c6-4121-af0c-f8b839ed045f"
     },
     {
       "company": "LEA Recrutement",
@@ -77,9 +86,12 @@
       "template": "cabinet",
       "subject": "Montpellier : les entreprises qui recrutent, détectées avant",
       "hook": "capter les mandats locaux avant les cabinets parisiens",
-      "relances": [],
+      "relances": [
+        "2026-07-24"
+      ],
       "resend_id": "807dd20a-4607-429e-9d7b-5fc933b6857d",
-      "notes": "Cabinet local — angle territorial (David vs parisiens) est son propre discours commercial"
+      "notes": "Cabinet local — angle territorial (David vs parisiens) est son propre discours commercial",
+      "relance_resend_id": "ca9efde7-35f5-4e92-9677-7d8d67a917e1"
     },
     {
       "company": "Factoriel",
@@ -96,9 +108,12 @@
       "template": "cabinet",
       "subject": "Des besoins IT/IA détectés avant l'appel d'offres",
       "hook": "détecter les besoins SI et IA avant qu'ils ne deviennent des appels d'offres",
-      "relances": [],
+      "relances": [
+        "2026-07-24"
+      ],
       "resend_id": "906d5648-5276-4d41-9ae0-3b2129feec6e",
-      "notes": "Consultants SI/IA — signal « nouveau CTO / croissance IA » correspond à mandats types"
+      "notes": "Consultants SI/IA — signal « nouveau CTO / croissance IA » correspond à mandats types",
+      "relance_resend_id": "9380f612-ceb5-444e-bb47-5bc590b867f0"
     },
     {
       "company": "Silkhom",
@@ -107,7 +122,7 @@
       "sent": true,
       "sent_date": "2026-07-23",
       "delivered": false,
-      "bounced": false,
+      "bounced": true,
       "replied": false,
       "meeting": false,
       "signed": false,
@@ -126,7 +141,7 @@
       "sent": true,
       "sent_date": "2026-07-23",
       "delivered": false,
-      "bounced": false,
+      "bounced": true,
       "replied": false,
       "meeting": false,
       "signed": false,
@@ -145,7 +160,7 @@
       "sent": true,
       "sent_date": "2026-07-23",
       "delivered": false,
-      "bounced": false,
+      "bounced": true,
       "replied": false,
       "meeting": false,
       "signed": false,
@@ -164,7 +179,7 @@
       "sent": true,
       "sent_date": "2026-07-23",
       "delivered": false,
-      "bounced": false,
+      "bounced": true,
       "replied": false,
       "meeting": false,
       "signed": false,
@@ -182,7 +197,7 @@
       "priority": "WARM",
       "sent": true,
       "sent_date": "2026-07-23",
-      "delivered": false,
+      "delivered": true,
       "bounced": false,
       "replied": false,
       "meeting": false,
