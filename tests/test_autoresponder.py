@@ -120,6 +120,61 @@ def test_build_target_prefixe_re_si_absent():
     assert autoresponder.build_report_target(act)["subject"] == "Re: Demande info"
 
 
+# ── personnalisation via le cœur (repli garanti) ─────────────────────────
+
+def test_compose_report_defaut_contient_corps_et_optout():
+    txt = autoresponder.compose_report(None)
+    assert txt.startswith("Bonjour")
+    assert "SYNANTO" in txt and "199 €/mois" in txt
+    assert txt.rstrip().endswith("répondez « stop ».")
+
+
+def test_compose_report_intro_personnalisee_remplace_intro_garde_corps():
+    txt = autoresponder.compose_report("Ravi de votre retour rapide !")
+    assert txt.startswith("Ravi de votre retour rapide !")
+    assert "Merci pour votre" not in txt          # intro figée remplacée
+    assert "QUANTUM SURGICAL" in txt              # corps factuel préservé
+    assert "répondez « stop »." in txt            # opt-out préservé
+
+
+def test_sane_intro_rejette_trop_long_ou_vide():
+    assert autoresponder.sane_intro("Bonjour, ravi !") == "Bonjour, ravi !"
+    assert autoresponder.sane_intro("") is None
+    assert autoresponder.sane_intro(None) is None
+    assert autoresponder.sane_intro("x" * 401) is None
+    assert autoresponder.sane_intro("a\n" * 8) is None
+
+
+def test_personalized_intro_utilise_le_coeur():
+    class _Res:
+        text = "  Merci de votre réactivité — voici ce que Velyx a repéré chez vous.  "
+    got = autoresponder.personalized_intro(
+        "dg@cabinet.fr", "oui envoyez",
+        route_fn=lambda role, user, system: _Res())
+    assert got == "Merci de votre réactivité — voici ce que Velyx a repéré chez vous."
+
+
+def test_personalized_intro_repli_si_coeur_echoue():
+    def boom(role, user, system):
+        raise RuntimeError("pas de clé LLM")
+    assert autoresponder.personalized_intro("dg@cabinet.fr", "oui", route_fn=boom) is None
+
+
+def test_personalized_intro_repli_si_sortie_hors_gabarit():
+    class _Res:
+        text = "x" * 500  # trop long → rejeté
+    assert autoresponder.personalized_intro(
+        "dg@cabinet.fr", "oui", route_fn=lambda r, u, s: _Res()) is None
+
+
+def test_build_target_intro_personnalisee_thread_ok():
+    act = {"message_id": "<CAG@mail>", "sender": "p@cabinet.fr", "subject": "Oui"}
+    tgt = autoresponder.build_report_target(act, "Intro sur-mesure.")
+    assert tgt["text"].startswith("Intro sur-mesure.")
+    assert "SYNANTO" in tgt["text"]
+    assert tgt["headers"]["In-Reply-To"] == "<CAG@mail>"
+
+
 # ── apply_result ────────────────────────────────────────────────────────
 
 def test_apply_report_ok_marque_handled_et_reported():
