@@ -1,0 +1,64 @@
+{
+  "_comment": "Cartographie RÔLE -> modèles. Provider-agnostique : ces IDs sont des DÉFAUTS à ÉDITER selon ce à quoi vous avez réellement accès. Le fournisseur est déduit du préfixe (claude*->anthropic, gpt*/o*->openai, gemini*->google, deepseek*->deepseek, mistral*->mistral). primary = 1er choix ; fallbacks = essayés dans l'ordre si le primary est indisponible (clé absente ou erreur). Aucune clé n'est ici : elles viennent de l'environnement.",
+  "_verify": "Vérifiez les IDs exacts chez chaque fournisseur avant prod — ils changent souvent. Un ID invalide bascule simplement au fallback.",
+  "roles": {
+    "observateur": {
+      "purpose": "Veille, recherche web, détection de signaux — actualité et couverture large.",
+      "primary": "gpt-5",
+      "fallbacks": ["gemini-2.5-pro", "claude-sonnet-5"],
+      "max_tokens": 2048
+    },
+    "stratege": {
+      "purpose": "Raisonnement long, plans complexes, scénarios.",
+      "primary": "claude-opus-5",
+      "fallbacks": ["deepseek-reasoner", "claude-sonnet-5"],
+      "max_tokens": 4096
+    },
+    "decideur": {
+      "purpose": "Décision sous contrainte + éthique (Constitution). Rôle à conseil.",
+      "primary": "claude-opus-5",
+      "fallbacks": ["gpt-5", "deepseek-reasoner"],
+      "max_tokens": 2048,
+      "council": true
+    },
+    "architecte": {
+      "purpose": "Conception système et code complexe, long contexte.",
+      "primary": "gpt-5",
+      "fallbacks": ["claude-opus-5", "gemini-2.5-pro"],
+      "max_tokens": 8192
+    },
+    "executeur": {
+      "purpose": "Code + rédaction (copy, emails). Volume et régularité.",
+      "primary": "claude-sonnet-5",
+      "fallbacks": ["gpt-5", "mistral-large-latest"],
+      "max_tokens": 4096
+    },
+    "controleur": {
+      "purpose": "Analyse de données, statistiques, vérification chiffrée.",
+      "primary": "deepseek-reasoner",
+      "fallbacks": ["gpt-5", "claude-sonnet-5"],
+      "max_tokens": 2048
+    },
+    "conservateur": {
+      "purpose": "Mémoire, synthèse de très long contexte.",
+      "primary": "gemini-2.5-pro",
+      "fallbacks": ["claude-sonnet-5"],
+      "max_tokens": 4096
+    },
+    "gardien": {
+      "purpose": "Sécurité, éthique, veto. Rôle à conseil — jamais un point de défaillance unique.",
+      "primary": "claude-opus-5",
+      "fallbacks": ["gpt-5", "deepseek-reasoner"],
+      "max_tokens": 1536,
+      "council": true
+    }
+  },
+  "prices_comment": "Indicatif $/1M tokens (in,out), pour le journal. À ajuster.",
+  "prices": {
+    "anthropic": [5.0, 25.0],
+    "openai": [5.0, 15.0],
+    "google": [2.5, 10.0],
+    "deepseek": [0.6, 1.7],
+    "mistral": [2.0, 6.0]
+  }
+}
