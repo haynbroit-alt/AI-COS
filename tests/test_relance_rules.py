@@ -81,6 +81,12 @@ def test_initiaux_excluent_stop():
     assert rules.due_initials(pool, "2026-07-23") == []
 
 
+def test_initiaux_excluent_paused():
+    # Cible gelée (adresse non vérifiée) → jamais envoyée tant que paused.
+    pool = [_contact(sent=False, sent_date=None, status="paused")]
+    assert rules.due_initials(pool, "2026-07-23") == []
+
+
 # --- application des statuts Resend --------------------------------------
 
 def test_bounce_exclut_definitivement():
