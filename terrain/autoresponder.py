@@ -45,14 +45,30 @@ AUTOREPLY_MARKERS = (
 
 REPORT_SUBJECT_FALLBACK = "Re: Oui — 10 opportunités gratuites"
 
-# Le rapport livré — identique à l'envoi manuel de démonstration. Échantillon
-# Montpellier (velyx-rapport-montpellier.md), voix de marque « radar commercial ».
-REPORT_TEXT = (
+# Le rapport = intro (personnalisable) + corps FIGÉ. Le corps (les 6
+# opportunités + l'appel + l'opt-out) ne change jamais : c'est le livrable
+# factuel. Seule l'intro peut être personnalisée par le cœur (route executeur),
+# avec repli sur REPORT_INTRO si le LLM est indisponible.
+REPORT_INTRO = (
     "Bonjour,\n\n"
     "Merci pour votre « oui ». Voici les opportunités détectées sur le marché "
     "recrutement tech Montpellier / Occitanie — chaque ligne est une entreprise "
     "qui montre un signal de recrutement AVANT d'avoir lancé une recherche "
-    "cabinet.\n\n"
+    "cabinet."
+)
+
+# Instruction stricte pour la personnalisation : UNIQUEMENT une intro courte,
+# aucune invention, aucun chiffre promis, pas de signature.
+PERSONALIZE_SYSTEM = (
+    "Tu écris UNIQUEMENT une phrase ou deux d'introduction (français) pour un "
+    "email à un cabinet de recrutement tech qui vient de répondre « oui » à notre "
+    "offre de 10 opportunités détectées. Ton : chaleureux, direct, zéro jargon "
+    "marketing. Interdits : promesses chiffrées, chiffres inventés, nom de "
+    "personne inventé, signature, saut vers une liste. Sors le texte brut de "
+    "l'intro, rien d'autre, 350 caractères maximum."
+)
+
+REPORT_BODY = (
     "1) SYNANTO — Montpellier · Priorité HAUTE\n"
     "   Signal : plusieurs offres mobiles simultanées (iOS Senior, Android Kotlin "
     "Multiplatform).\n"
@@ -94,6 +110,48 @@ REPORT_TEXT = (
     "Charfa — Velyx\nhello@velyx.org\n\n"
     "Pour ne plus recevoir de message : répondez « stop »."
 )
+
+# Rapport complet par défaut (intro figée) — inchangé fonctionnellement.
+REPORT_TEXT = REPORT_INTRO + "\n\n" + REPORT_BODY
+
+
+def compose_report(intro: str | None = None) -> str:
+    """Assemble le rapport : intro (personnalisée ou par défaut) + corps figé."""
+    return (intro or REPORT_INTRO).strip() + "\n\n" + REPORT_BODY
+
+
+def sane_intro(text: str | None) -> str | None:
+    """Valide une intro générée : non vide, courte, sans dérive. None sinon.
+    Garde-fou : on n'envoie jamais un LLM non contrôlé à un prospect."""
+    if not text:
+        return None
+    intro = text.strip()
+    if not intro or len(intro) > 400 or intro.count("\n") > 6:
+        return None
+    return intro
+
+
+def personalized_intro(sender: str, body: str, *, route_fn=None) -> str | None:
+    """Intro personnalisée via le cœur d'orchestration (route « executeur »).
+    Best-effort : renvoie None dès qu'un maillon manque (pas de clé LLM, import
+    indisponible, appel en échec, sortie hors gabarit) → repli sur l'intro figée.
+    Le corps factuel du rapport n'est JAMAIS confié au LLM."""
+    if route_fn is None:
+        try:
+            from ai_cos import orchestrator as brain
+        except Exception:
+            return None
+
+        def route_fn(role, user, system):  # noqa: E306 — fermeture locale
+            return brain.route(role, user, system=system)
+
+    domain = sender.split("@")[-1] if "@" in sender else ""
+    user = f"Domaine du prospect : {domain}\nSon message : {(body or '')[:500]}"
+    try:
+        res = route_fn("executeur", user, PERSONALIZE_SYSTEM)
+    except Exception:
+        return None
+    return sane_intro(getattr(res, "text", None))
 
 
 # ── Logique pure ────────────────────────────────────────────────────────
@@ -172,8 +230,11 @@ def plan_actions(received: list[dict], state: dict) -> list[dict]:
     return actions
 
 
-def build_report_target(action: dict) -> dict:
-    """Construit la cible d'envoi (format ResendSender) pour un « oui »."""
+def build_report_target(action: dict, intro: str | None = None) -> dict:
+    """Construit la cible d'envoi (format ResendSender) pour un « oui ».
+
+    ``intro`` = intro personnalisée (cœur d'orchestration) ; None → intro figée.
+    Le corps du rapport reste toujours le livrable factuel."""
     subject = action.get("subject") or ""
     re_subject = subject if subject.lower().startswith("re:") else (
         f"Re: {subject}" if subject else REPORT_SUBJECT_FALLBACK
@@ -189,7 +250,7 @@ def build_report_target(action: dict) -> dict:
         "reply_to": REPLY_TO,
         "email": action["sender"],
         "subject": re_subject,
-        "text": REPORT_TEXT,
+        "text": compose_report(intro),
         "headers": headers,
         "idempotency_key": f"velyx-report-{key_suffix}",
     }
@@ -280,6 +341,7 @@ def run(state_path: Path = STATE_PATH) -> dict:
         enriched.append(msg)
 
     actions = plan_actions(enriched, state)
+    bodies = {_msg_id(m): m.get("text", "") for m in enriched}  # corps par message-id
     sender = outreach.ResendSender()
     results, needs_human = [], False
     for act in actions:
@@ -288,11 +350,15 @@ def run(state_path: Path = STATE_PATH) -> dict:
             if not os.environ.get("RESEND_API_KEY"):
                 results.append({**act, "status": "error", "error": "RESEND_API_KEY absent"})
                 continue  # non marqué handled → réessai
+            # Cœur d'orchestration : intro personnalisée si une clé LLM est posée,
+            # sinon repli automatique sur l'intro figée (envoi jamais bloqué).
+            intro = personalized_intro(act["sender"], bodies.get(act["message_id"], ""))
             try:
-                res = sender.send(build_report_target(act))
+                res = sender.send(build_report_target(act, intro))
                 apply_result(state, act, True)
                 needs_human = True  # rapport livré → suivi humain (le RDV)
-                results.append({**act, "status": "report_sent", "id": res.get("id")})
+                results.append({**act, "status": "report_sent",
+                                "id": res.get("id"), "personalized": intro is not None})
             except outreach.OutreachError as exc:
                 results.append({**act, "status": "error", "error": str(exc)})
         elif kind == "stop":
